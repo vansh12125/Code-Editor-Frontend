@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [showScroll, setShowScroll] = useState(true);
@@ -50,9 +51,12 @@ const Home = () => {
           </p>
 
           <div className="mt-9 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-            <button className="w-full rounded-xl bg-white px-7 py-3.5 font-semibold text-black shadow-xl transition hover:-translate-y-0.5 hover:bg-white/90 sm:w-auto">
+            <Link
+              to={"/signup"}
+              className="w-full rounded-xl bg-white px-7 py-3.5 font-semibold text-black shadow-xl transition hover:-translate-y-0.5 hover:bg-white/90 sm:w-auto"
+            >
               Get Started →
-            </button>
+            </Link>
             <button className="w-full rounded-xl border border-white/30 bg-white/10 px-7 py-3.5 font-semibold text-white backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/20 sm:w-auto">
               Explore IDE
             </button>
@@ -91,7 +95,10 @@ const Home = () => {
         </button>
       </section>
 
-      <section className="min-h-screen px-5 py-24 sm:px-8 lg:px-16" id="features">
+      <section
+        className="min-h-screen px-5 py-24 sm:px-8 lg:px-16"
+        id="features"
+      >
         <div className="mx-auto max-w-6xl">
           <div className="max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-widest text-white/60">

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Eye, EyeClosed } from "lucide-react";
 import type { LoginUserRequest } from "@/interfaces";
 import { LoginUser } from "@/service/authService";
+import { validateLogin } from "@/service";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -13,30 +14,6 @@ const LoginPage = () => {
     password?: string;
     responseError?: string;
   }>({});
-
-  const validateLogin = (username: string, password: string) => {
-    const errors: {
-      username?: string;
-      password?: string;
-    } = {};
-
-    if (!username.trim()) {
-      errors.username = "Username cannot be empty";
-    } else if (username.length < 3 || username.length > 25) {
-      errors.username = "Username must be between 3 to 25 characters";
-    } else if (!/^[a-zA-Z][a-zA-Z0-9_]{2,24}$/.test(username)) {
-      errors.username =
-        "Username must start with a letter and contain only letters, numbers, or underscores";
-    }
-
-    if (!password) {
-      errors.password = "Password cannot be empty";
-    } else if (password.length < 8) {
-      errors.password = "Password must be at least 8 characters";
-    }
-
-    return errors;
-  };
 
   const handleFormSubmit = async () => {
     const validationErrors = validateLogin(username, password);
@@ -59,6 +36,8 @@ const LoginPage = () => {
       });
 
       return;
+    } else if (response.success) {
+      console.log("Success");
     }
   };
 
@@ -218,7 +197,9 @@ const LoginPage = () => {
                 </div>
 
                 {errors.responseError && (
-                  <p className="text-sm text-red-400 text-center">{errors.responseError}</p>
+                  <p className="text-sm text-red-400 text-center">
+                    {errors.responseError}
+                  </p>
                 )}
 
                 <button

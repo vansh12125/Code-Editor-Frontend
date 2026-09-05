@@ -7,8 +7,8 @@ import type {
 } from "@/interfaces";
 
 const RegisterUserByUsername = async (
-  userData: RegisterUserRequest,
-): Promise<Response> => {
+  userData: RegisterUserRequest
+): Promise<Response<unknown, string | null>> => {
   try {
     const response = await apiClient.post("/auth/signup", userData);
 
@@ -16,16 +16,17 @@ const RegisterUserByUsername = async (
       success: true,
       data: response.data,
       errors: null,
-    } as Response;
+    };
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       return {
         success: false,
         data: null,
-        errors: error.response?.data ?? {
-          message: "Something went wrong",
-        },
-      } as Response;
+        errors:
+          typeof error.response?.data?.errors === "string"
+            ? error.response.data.errors
+            : "Something went wrong",
+      };
     }
 
     return {

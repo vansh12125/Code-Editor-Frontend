@@ -5,33 +5,26 @@ const Navbar = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
-    <nav className="fixed left-1/2 top-4 z-50 w-[calc(100%-2rem)] max-w-6xl -translate-x-1/2 rounded-2xl border border-white/20 bg-black/20 px-4 py-3 text-white shadow-lg backdrop-blur-xl sm:top-5 sm:px-6">
+    <nav className="fixed left-1/2 top-4 z-50 w-[calc(100%-2rem)] max-w-6xl -translate-x-1/2 rounded-2xl border border-white/20 bg-black/20 px-4 py-3 text-white shadow-lg backdrop-blur-xl sm:top-5 sm:px-6 select-none">
       <div className="flex items-center justify-between">
         <Link to="/" className="text-xl font-bold tracking-tight sm:text-2xl">
           CodeSpace
         </Link>
 
         <div className="hidden items-center gap-8 md:flex">
-          <a
-            href="#features"
+          <Link
+            to="/contact"
             className="text-sm font-medium text-white/80 transition hover:text-white"
           >
-            Features
-          </a>
+            Contact
+          </Link>
 
-          <a
-            href="#how-it-works"
-            className="text-sm font-medium text-white/80 transition hover:text-white"
-          >
-            How it works
-          </a>
-
-          <a
-            href="#about"
+          <Link
+            to="/about"
             className="text-sm font-medium text-white/80 transition hover:text-white"
           >
             About
-          </a>
+          </Link>
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
@@ -42,9 +35,9 @@ const Navbar = () => {
             Log in
           </Link>
 
-          <button className="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-white/90">
+          <Link to={"/signup"} className="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-white/90">
             Get Started
-          </button>
+          </Link>
         </div>
 
         <button
@@ -78,29 +71,21 @@ const Navbar = () => {
         }`}
       >
         <div className="flex flex-col gap-2 border-t border-white/10 pt-3">
-          <a
-            href="#features"
+          <Link
+            to="/contact"
             onClick={() => setOpen(false)}
             className="rounded-xl px-4 py-3 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white"
           >
-            Features
-          </a>
+            Contact
+          </Link>
 
-          <a
-            href="#how-it-works"
-            onClick={() => setOpen(false)}
-            className="rounded-xl px-4 py-3 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white"
-          >
-            How it works
-          </a>
-
-          <a
-            href="#about"
+          <Link
+            to="/about"
             onClick={() => setOpen(false)}
             className="rounded-xl px-4 py-3 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white"
           >
             About
-          </a>
+          </Link>
 
           <div className="mt-2 grid grid-cols-2 gap-2 border-t border-white/10 pt-3">
             <Link
@@ -110,9 +95,10 @@ const Navbar = () => {
               Log in
             </Link>
 
-            <button className="rounded-xl bg-white px-4 py-3 text-sm font-semibold text-black transition hover:bg-white/90">
+            <Link 
+            to={"/signup"} className="rounded-xl bg-white px-4 py-3 text-sm font-semibold text-black transition hover:bg-white/90">
               Get Started
-            </button>
+            </Link>
           </div>
         </div>
       </div>
