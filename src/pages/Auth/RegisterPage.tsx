@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Eye, EyeClosed } from "lucide-react";
 
 const RegisterPage = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
 
   return (
     <main className="relative min-h-screen w-full overflow-hidden select-none">
@@ -53,23 +55,23 @@ const RegisterPage = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-center bg-white/95 p-5 sm:p-7">
+          <div className="flex items-center justify-center border-t border-white/10 p-5 sm:p-7 lg:border-t-0">
             <div className="w-full max-w-md">
               <div className="mb-5 lg:hidden">
                 <Link
                   to="/"
-                  className="text-2xl font-bold tracking-tight text-neutral-900"
+                  className="text-2xl font-bold tracking-tight text-white"
                 >
                   CodeSpace
                 </Link>
               </div>
 
               <div>
-                <h2 className="text-3xl font-bold tracking-tight text-neutral-900">
+                <h2 className="text-3xl font-bold tracking-tight text-white">
                   Create your account
                 </h2>
 
-                <p className="mt-1 text-sm text-neutral-500">
+                <p className="mt-1 text-sm text-white/60">
                   Set up your workspace and start coding.
                 </p>
               </div>
@@ -78,7 +80,7 @@ const RegisterPage = () => {
                 <div>
                   <label
                     htmlFor="name"
-                    className="mb-1.5 block text-sm font-medium text-neutral-800"
+                    className="mb-1.5 block text-sm font-medium text-white/80"
                   >
                     Name
                   </label>
@@ -87,14 +89,14 @@ const RegisterPage = () => {
                     id="name"
                     type="text"
                     placeholder="Your name"
-                    className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-2.5 text-sm text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:ring-2 focus:ring-neutral-200"
+                    className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-white outline-none transition placeholder:text-white/40 focus:border-white/40 focus:bg-white/10 focus:ring-2 focus:ring-white/20"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="username"
-                    className="mb-1.5 block text-sm font-medium text-neutral-800"
+                    className="mb-1.5 block text-sm font-medium text-white/80"
                   >
                     Username
                   </label>
@@ -103,14 +105,14 @@ const RegisterPage = () => {
                     id="username"
                     type="text"
                     placeholder="Choose a username"
-                    className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-2.5 text-sm text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:ring-2 focus:ring-neutral-200"
+                    className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-white outline-none transition placeholder:text-white/40 focus:border-white/40 focus:bg-white/10 focus:ring-2 focus:ring-white/20"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="email"
-                    className="mb-1.5 block text-sm font-medium text-neutral-800"
+                    className="mb-1.5 block text-sm font-medium text-white/80"
                   >
                     Email
                   </label>
@@ -119,14 +121,14 @@ const RegisterPage = () => {
                     id="email"
                     type="email"
                     placeholder="you@example.com"
-                    className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-2.5 text-sm text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:ring-2 focus:ring-neutral-200"
+                    className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-white outline-none transition placeholder:text-white/40 focus:border-white/40 focus:bg-white/10 focus:ring-2 focus:ring-white/20"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="password"
-                    className="mb-1.5 block text-sm font-medium text-neutral-800"
+                    className="mb-1.5 block text-sm font-medium text-white/80"
                   >
                     Password
                   </label>
@@ -136,15 +138,19 @@ const RegisterPage = () => {
                       id="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="Create a password"
-                      className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-2.5 pr-20 text-sm text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:ring-2 focus:ring-neutral-200"
+                      className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 pr-20 text-sm text-white outline-none transition placeholder:text-white/40 focus:border-white/40 focus:bg-white/10 focus:ring-2 focus:ring-white/20"
                     />
 
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-neutral-500 hover:text-neutral-900"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-white/60 transition hover:text-white"
                     >
-                      {showPassword ? "Hide" : "Show"}
+                      {showPassword ? (
+                        <EyeClosed size={19} />
+                      ) : (
+                        <Eye size={19} />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -152,7 +158,7 @@ const RegisterPage = () => {
                 <div>
                   <label
                     htmlFor="confirmPassword"
-                    className="mb-1.5 block text-sm font-medium text-neutral-800"
+                    className="mb-1.5 block text-sm font-medium text-white/80"
                   >
                     Confirm password
                   </label>
@@ -162,7 +168,7 @@ const RegisterPage = () => {
                       id="confirmPassword"
                       type={showConfirmPassword ? "text" : "password"}
                       placeholder="Confirm your password"
-                      className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-2.5 pr-20 text-sm text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:ring-2 focus:ring-neutral-200"
+                      className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 pr-20 text-sm text-white outline-none transition placeholder:text-white/40 focus:border-white/40 focus:bg-white/10 focus:ring-2 focus:ring-white/20"
                     />
 
                     <button
@@ -170,9 +176,13 @@ const RegisterPage = () => {
                       onClick={() =>
                         setShowConfirmPassword(!showConfirmPassword)
                       }
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-neutral-500 hover:text-neutral-900"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-white/60 transition hover:text-white"
                     >
-                      {showConfirmPassword ? "Hide" : "Show"}
+                      {showConfirmPassword ? (
+                        <EyeClosed size={19} />
+                      ) : (
+                        <Eye size={19} />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -181,12 +191,12 @@ const RegisterPage = () => {
                   <input
                     id="terms"
                     type="checkbox"
-                    className="mt-0.5 h-4 w-4 rounded border-neutral-300"
+                    className="mt-0.5 h-4 w-4 rounded border-white/20 bg-white/5 accent-white"
                   />
 
                   <label
                     htmlFor="terms"
-                    className="text-xs leading-relaxed text-neutral-500"
+                    className="text-xs leading-relaxed text-white/60"
                   >
                     I agree to the terms of service and privacy policy.
                   </label>
@@ -194,33 +204,33 @@ const RegisterPage = () => {
 
                 <button
                   type="submit"
-                  className="w-full rounded-xl bg-neutral-950 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-neutral-800 active:scale-[0.99]"
+                  className="w-full rounded-xl bg-white px-5 py-3 text-sm font-semibold text-neutral-950 shadow-lg transition hover:bg-white/90 active:scale-[0.99]"
                 >
                   Create account
                 </button>
               </form>
 
               <div className="my-4 flex items-center gap-4">
-                <div className="h-px flex-1 bg-neutral-200" />
+                <div className="h-px flex-1 bg-white/10" />
 
-                <span className="text-xs text-neutral-400">OR</span>
+                <span className="text-xs text-white/40">OR</span>
 
-                <div className="h-px flex-1 bg-neutral-200" />
+                <div className="h-px flex-1 bg-white/10" />
               </div>
 
               <button
                 type="button"
-                className="flex w-full items-center justify-center gap-3 rounded-xl border border-neutral-200 bg-white px-5 py-3 text-sm font-medium text-neutral-700 transition hover:bg-neutral-50"
+                className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10"
               >
                 <span className="font-bold">G</span>
                 Sign up with Google
               </button>
 
-              <p className="mt-4 text-center text-sm text-neutral-500">
+              <p className="mt-4 text-center text-sm text-white/60">
                 Already have an account?{" "}
                 <Link
                   to="/signin"
-                  className="font-semibold text-neutral-900 hover:underline"
+                  className="font-semibold text-white hover:underline"
                 >
                   Sign in
                 </Link>
