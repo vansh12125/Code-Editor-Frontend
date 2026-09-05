@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Navbar from "../../components/layout/Navbar";
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,16 +18,10 @@ const RegisterPage = () => {
 
       <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.45)_100%)]" />
 
-      <Navbar />
-
       <div className="flex min-h-screen items-center justify-center px-4 pb-5 pt-24 sm:px-6">
         <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-white/20 bg-black/25 shadow-2xl backdrop-blur-xl lg:grid-cols-2">
-
           <div className="hidden flex-col justify-between p-8 text-white lg:flex xl:p-9">
-            <Link
-              to="/"
-              className="text-2xl font-bold tracking-tight"
-            >
+            <Link to="/" className="text-2xl font-bold tracking-tight">
               CodeSpace
             </Link>
 
@@ -46,8 +39,8 @@ const RegisterPage = () => {
               </h1>
 
               <p className="mt-4 max-w-md text-sm leading-relaxed text-white/65 xl:text-base">
-                Create your workspace, choose your language, and start
-                building without worrying about local setup.
+                Create your workspace, choose your language, and start building
+                without worrying about local setup.
               </p>
             </div>
 
@@ -62,7 +55,6 @@ const RegisterPage = () => {
 
           <div className="flex items-center justify-center bg-white/95 p-5 sm:p-7">
             <div className="w-full max-w-md">
-
               <div className="mb-5 lg:hidden">
                 <Link
                   to="/"
@@ -83,7 +75,6 @@ const RegisterPage = () => {
               </div>
 
               <form className="mt-5 space-y-3">
-
                 <div>
                   <label
                     htmlFor="name"
@@ -212,9 +203,7 @@ const RegisterPage = () => {
               <div className="my-4 flex items-center gap-4">
                 <div className="h-px flex-1 bg-neutral-200" />
 
-                <span className="text-xs text-neutral-400">
-                  OR
-                </span>
+                <span className="text-xs text-neutral-400">OR</span>
 
                 <div className="h-px flex-1 bg-neutral-200" />
               </div>
@@ -223,26 +212,21 @@ const RegisterPage = () => {
                 type="button"
                 className="flex w-full items-center justify-center gap-3 rounded-xl border border-neutral-200 bg-white px-5 py-3 text-sm font-medium text-neutral-700 transition hover:bg-neutral-50"
               >
-                <span className="font-bold">
-                  G
-                </span>
-
+                <span className="font-bold">G</span>
                 Sign up with Google
               </button>
 
               <p className="mt-4 text-center text-sm text-neutral-500">
                 Already have an account?{" "}
                 <Link
-                  to="/login"
+                  to="/signin"
                   className="font-semibold text-neutral-900 hover:underline"
                 >
                   Sign in
                 </Link>
               </p>
-
             </div>
           </div>
-
         </div>
       </div>
     </main>

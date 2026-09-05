@@ -7,9 +7,9 @@ const Navbar = () => {
   return (
     <nav className="fixed left-1/2 top-4 z-50 w-[calc(100%-2rem)] max-w-6xl -translate-x-1/2 rounded-2xl border border-white/20 bg-black/20 px-4 py-3 text-white shadow-lg backdrop-blur-xl sm:top-5 sm:px-6">
       <div className="flex items-center justify-between">
-        <a href="/" className="text-xl font-bold tracking-tight sm:text-2xl">
+        <Link to="/" className="text-xl font-bold tracking-tight sm:text-2xl">
           CodeSpace
-        </a>
+        </Link>
 
         <div className="hidden items-center gap-8 md:flex">
           <a
@@ -37,7 +37,7 @@ const Navbar = () => {
         <div className="hidden items-center gap-3 md:flex">
           <Link
             className="rounded-xl px-4 py-2 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white"
-            to={"/login"}
+            to={"/signin"}
           >
             Log in
           </Link>
@@ -105,7 +105,7 @@ const Navbar = () => {
           <div className="mt-2 grid grid-cols-2 gap-2 border-t border-white/10 pt-3">
             <Link
               className="rounded-xl px-4 py-3 text-sm font-medium text-white/80 transition hover:bg-white/10"
-              to={"/login"}
+              to={"/signin"}
             >
               Log in
             </Link>

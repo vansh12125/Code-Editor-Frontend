@@ -1,10 +1,8 @@
 import { Link } from "react-router-dom";
-import Navbar from "../../components/layout/Navbar";
 
 const LoginPage = () => {
   return (
     <main className="relative min-h-screen w-full overflow-hidden select-none">
-
       <div
         className="fixed inset-0 -z-20 bg-cover bg-center bg-no-repeat"
         style={{
@@ -16,18 +14,10 @@ const LoginPage = () => {
 
       <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.45)_100%)]" />
 
-      <Navbar />
-
       <div className="flex min-h-screen items-center justify-center px-4 pb-6 pt-24 sm:px-6">
-
         <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-white/20 bg-black/25 shadow-2xl backdrop-blur-xl lg:grid-cols-2">
-
           <div className="hidden flex-col justify-between p-8 text-white lg:flex xl:p-10">
-
-            <Link
-              to="/"
-              className="text-2xl font-bold tracking-tight"
-            >
+            <Link to="/" className="text-2xl font-bold tracking-tight">
               CodeSpace
             </Link>
 
@@ -45,21 +35,16 @@ const LoginPage = () => {
               </h1>
 
               <p className="mt-5 max-w-md text-sm leading-relaxed text-white/65 xl:text-base">
-                Continue building your projects in a powerful online
-                development environment designed to keep you focused.
+                Continue building your projects in a powerful online development
+                environment designed to keep you focused.
               </p>
             </div>
 
-            <p className="text-sm text-white/40">
-              Write · Run · Build
-            </p>
-
+            <p className="text-sm text-white/40">Write · Run · Build</p>
           </div>
 
           <div className="flex items-center justify-center bg-white/95 p-6 sm:p-8">
-
             <div className="w-full max-w-md">
-
               <div className="mb-6 lg:hidden">
                 <Link
                   to="/"
@@ -80,7 +65,6 @@ const LoginPage = () => {
               </div>
 
               <form className="mt-6 space-y-4">
-
                 <div>
                   <label
                     htmlFor="email"
@@ -98,9 +82,7 @@ const LoginPage = () => {
                 </div>
 
                 <div>
-
                   <div className="mb-1.5 flex items-center justify-between">
-
                     <label
                       htmlFor="password"
                       className="text-sm font-medium text-neutral-800"
@@ -114,7 +96,6 @@ const LoginPage = () => {
                     >
                       Forgot password?
                     </button>
-
                   </div>
 
                   <input
@@ -123,11 +104,9 @@ const LoginPage = () => {
                     placeholder="Enter your password"
                     className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white focus:ring-2 focus:ring-neutral-200"
                   />
-
                 </div>
 
                 <div className="flex items-center gap-2">
-
                   <input
                     id="remember"
                     type="checkbox"
@@ -140,7 +119,6 @@ const LoginPage = () => {
                   >
                     Remember me
                   </label>
-
                 </div>
 
                 <button
@@ -149,50 +127,37 @@ const LoginPage = () => {
                 >
                   Sign in
                 </button>
-
               </form>
 
               <div className="my-5 flex items-center gap-4">
-
                 <div className="h-px flex-1 bg-neutral-200" />
 
-                <span className="text-xs text-neutral-400">
-                  OR
-                </span>
+                <span className="text-xs text-neutral-400">OR</span>
 
                 <div className="h-px flex-1 bg-neutral-200" />
-
               </div>
 
               <button
                 type="button"
                 className="flex w-full items-center justify-center gap-3 rounded-xl border border-neutral-200 bg-white px-5 py-3 text-sm font-medium text-neutral-700 transition hover:bg-neutral-50"
               >
-                <span className="font-bold">
-                  G
-                </span>
-
+                <span className="font-bold">G</span>
                 Continue with Google
               </button>
 
               <p className="mt-5 text-center text-sm text-neutral-500">
                 Don't have an account?{" "}
                 <Link
-                  to="/register"
+                  to="/signup"
                   className="font-semibold text-neutral-900 hover:underline"
                 >
                   Create one
                 </Link>
               </p>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </main>
   );
 };
