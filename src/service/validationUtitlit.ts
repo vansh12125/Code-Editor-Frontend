@@ -85,4 +85,26 @@ const validateRegister = (
   return errors;
 };
 
-export { validateLogin, validateRegister };
+const validateProjectName = (projectName: string): string | null => {
+  const normalizedName = projectName.trim().replace(/\s+/g, "_");
+
+  if (!normalizedName) {
+    return "Project name is required";
+  }
+
+  if (normalizedName.length > 50) {
+    return "Project name must be between 1 and 50 characters";
+  }
+
+  if (!/[A-Za-z]/.test(normalizedName)) {
+    return "Project name must contain at least one letter";
+  }
+
+  if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(normalizedName)) {
+    return "Project name must start with a letter or underscore and contain only letters, numbers, or underscores";
+  }
+
+  return null;
+};
+
+export { validateLogin, validateRegister, validateProjectName };

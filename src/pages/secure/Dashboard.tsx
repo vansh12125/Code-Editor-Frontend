@@ -13,8 +13,15 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks";
 import type { Project } from "@/interfaces";
-import { Languages } from "@/interfaces";
+import { Languages, LanguageIcons } from "@/interfaces";
 import type { Languages as LanguagesType } from "@/interfaces";
+import { validateProjectName, CreateProject, formatDateTime } from "@/service";
+
+const LanguageIcon = ({ language }: { language: LanguagesType }) => {
+  const Icon = LanguageIcons[language];
+
+  return <Icon size={16} />;
+};
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -33,6 +40,7 @@ const Dashboard = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<LanguagesType>(
     Languages.HTML,
   );
+  const [projectNameError, setProjectNameError] = useState<string | null>(null);
 
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -40,6 +48,9 @@ const Dashboard = () => {
 
   const langDropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const [errors, setErrors] = useState<string | undefined>();
+  const [success, setSuccess] = useState<string | undefined>();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -58,9 +69,31 @@ const Dashboard = () => {
     };
   }, []);
 
-  const handleCreateProject = () => {
-    const trimmedName = projectName.trim();
-    if (!trimmedName) return;
+  const handleCreateProject = async () => {
+    const trimmedName = projectName.trim().replace(/\s+/g, "_");
+    setErrors("");
+    setSuccess("");
+    const error = validateProjectName(trimmedName);
+
+    if (error) {
+      setProjectNameError(error);
+      setProjectName("");
+      return;
+    }
+
+    setProjectNameError(null);
+
+    const response = await CreateProject({
+      projectName: projectName,
+      language: selectedLanguage,
+    });
+
+    if (!response.success) {
+      setErrors(response.errors ?? "Something went wrong");
+    } else {
+      console.log(response.data);
+      setSuccess("Project created successfully");
+    }
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -217,7 +250,7 @@ const Dashboard = () => {
                     </div>
 
                     <span className="mt-1 text-[10px] text-white/40">
-                      {project.updatedAt}
+                      {formatDateTime(project.updatedAt)}
                     </span>
                   </>
                 )}
@@ -269,10 +302,18 @@ const Dashboard = () => {
                     id="projectNameInput"
                     type="text"
                     value={projectName}
-                    onChange={(event) => setProjectName(event.target.value)}
+                    onChange={(event) =>
+                      setProjectName(event.target.value.replace(/\s+/g, "_"))
+                    }
                     placeholder="My awesome project"
                     className="w-full rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-white outline-none transition placeholder:text-white/35 focus:border-white/30 focus:bg-white/10"
                   />
+
+                  {projectNameError && (
+                    <p className="mt-1 text-xs text-red-400">
+                      {projectNameError}
+                    </p>
+                  )}
                 </div>
 
                 <div className="relative" ref={langDropdownRef}>
@@ -289,7 +330,10 @@ const Dashboard = () => {
                     onClick={() => setIsLangDropdownOpen((prev) => !prev)}
                     className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-white outline-none transition hover:border-white/20 hover:bg-white/10"
                   >
-                    <span>{selectedLanguage}</span>
+                    <span className="flex items-center gap-2">
+                      <LanguageIcon language={selectedLanguage} />
+                      {selectedLanguage}
+                    </span>
 
                     <ChevronDown
                       size={14}
@@ -319,7 +363,10 @@ const Dashboard = () => {
                               : "text-white/70 hover:bg-white/10 hover:text-white"
                           }`}
                         >
-                          <span>{language}</span>
+                          <span className="flex items-center gap-2">
+                            <LanguageIcon language={language} />
+                            {language}
+                          </span>
 
                           {selectedLanguage === language && <Check size={12} />}
                         </li>
@@ -328,7 +375,12 @@ const Dashboard = () => {
                   )}
                 </div>
               </div>
-
+              {errors && (
+                <p className="text-sm text-red-400 text-center">{errors}</p>
+              )}
+              {success && (
+                <p className="text-sm text-green-400 text-center">{success}</p>
+              )}
               <div className="flex items-center justify-end pt-1">
                 <button
                   type="button"
@@ -370,7 +422,7 @@ const Dashboard = () => {
                 >
                   <div className="flex min-w-0 items-center gap-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/70 transition group-hover:border-white/20 group-hover:bg-white/10 group-hover:text-white">
-                      <FileCode2 size={17} />
+                      <LanguageIcon language={project.language} />
                     </div>
 
                     <div className="min-w-0">
@@ -381,7 +433,7 @@ const Dashboard = () => {
                       <div className="mt-1 flex items-center gap-2 text-[11px] text-white/50">
                         <span>{project.language}</span>
                         <span>•</span>
-                        <span>{project.updatedAt}</span>
+                        <span>{formatDateTime(project.updatedAt)}</span>
                       </div>
                     </div>
                   </div>

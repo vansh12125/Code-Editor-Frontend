@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeClosed } from "lucide-react";
-import { validateRegister } from "@/service/validationUtitlit";
+import { validateRegister } from "@/service/";
 import { RegisterUserByUsername } from "@/service/authService";
 
 const RegisterPage = () => {
