@@ -1,24 +1,28 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 @import "tailwindcss";
-
 html {
   scrollbar-width: none;
   scroll-behavior: smooth;
-}
-
-body {
-  font-family: "Inter", sans-serif;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  margin: 0;
-  overflow-x: hidden;
 }
 
 html::-webkit-scrollbar {
   display: none;
 }
 
+body {
+  margin: 0;
+  overflow-x: hidden;
+  font-family: "Inter", sans-serif;
+}
+
+* {
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
