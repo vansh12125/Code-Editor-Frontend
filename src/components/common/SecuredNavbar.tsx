@@ -7,16 +7,14 @@ import {
   Settings,
   User,
 } from "lucide-react";
+import { useLogout, useAuth } from "@/hooks";
 
 export const SecuredNavbar = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  const user = {
-    name: "Alex",
-    email: "alex@example.com",
-  };
+  const handleLogout = useLogout();
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -33,11 +31,6 @@ export const SecuredNavbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  const handleLogout = () => {
-    setIsDropdownOpen(false);
-    navigate("/signin");
-  };
 
   return (
     <header className="fixed top-4 left-1/2 z-40 w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2">
@@ -75,12 +68,12 @@ export const SecuredNavbar = () => {
             aria-haspopup="menu"
           >
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-xs font-bold text-neutral-950">
-              {user.name.charAt(0).toUpperCase()}
+              {user?.name.charAt(0).toUpperCase()}
             </div>
 
             <div className="hidden text-left md:block">
               <p className="max-w-20 truncate text-xs font-medium text-white">
-                {user.name}
+                {user?.name}
               </p>
             </div>
 
@@ -99,10 +92,10 @@ export const SecuredNavbar = () => {
             >
               <div className="border-b border-white/10 px-3 py-2">
                 <p className="truncate text-xs font-medium text-white">
-                  {user.name}
+                  {user?.name}
                 </p>
                 <p className="mt-0.5 truncate text-[10px] text-white/50">
-                  {user.email}
+                  {user?.email}
                 </p>
               </div>
 

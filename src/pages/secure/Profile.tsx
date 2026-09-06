@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   AtSign,
   Camera,
@@ -10,6 +11,7 @@ import {
   User,
   X,
 } from "lucide-react";
+import { useAuth } from "@/hooks";
 
 interface ProfileErrors {
   name?: string;
@@ -19,20 +21,20 @@ interface ProfileErrors {
   confirmPassword?: string;
 }
 
-interface ProfileData {
-  name: string;
-  username: string;
-}
-
 const Profile = () => {
-  const [profile, setProfile] = useState<ProfileData>({
-    name: "Alex",
-    username: "alex",
-  });
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const [name, setName] = useState(profile.name);
-  const [username, setUsername] = useState(profile.username);
-  const [email] = useState("alex@example.com");
+  useEffect(() => {
+    if (!user) {
+      navigate("/signin", { replace: true });
+      return;
+    }
+  }, [user, navigate]);
+
+  const [name, setName] = useState(user?.name ?? "");
+  const [username, setUsername] = useState(user?.username ?? "");
+  const [email] = useState<string>(user?.email??"");
 
   const [showPasswordBox, setShowPasswordBox] = useState(false);
 
@@ -49,7 +51,7 @@ const Profile = () => {
   const [passwordChanged, setPasswordChanged] = useState(false);
 
   const hasProfileChanges =
-    name !== profile.name || username !== profile.username;
+    name !== user?.name || username !== user?.username;
 
   const hasProfileErrors = Boolean(errors.name) || Boolean(errors.username);
 
@@ -63,8 +65,7 @@ const Profile = () => {
     if (!username.trim()) {
       validationErrors.username = "Username cannot be empty";
     } else if (username.length < 3 || username.length > 25) {
-      validationErrors.username =
-        "Username must be between 3 to 25 characters";
+      validationErrors.username = "Username must be between 3 to 25 characters";
     } else if (!/^[a-zA-Z][a-zA-Z0-9_]{2,24}$/.test(username)) {
       validationErrors.username =
         "Username must start with a letter and contain only letters, numbers, or underscores";
@@ -77,8 +78,7 @@ const Profile = () => {
     const validationErrors: ProfileErrors = {};
 
     if (!currentPassword) {
-      validationErrors.currentPassword =
-        "Current password cannot be empty";
+      validationErrors.currentPassword = "Current password cannot be empty";
     } else if (currentPassword.length < 8) {
       validationErrors.currentPassword =
         "Password must be at least 8 characters";
@@ -87,13 +87,11 @@ const Profile = () => {
     if (!newPassword) {
       validationErrors.newPassword = "New password cannot be empty";
     } else if (newPassword.length < 8) {
-      validationErrors.newPassword =
-        "Password must be at least 8 characters";
+      validationErrors.newPassword = "Password must be at least 8 characters";
     }
 
     if (!confirmPassword) {
-      validationErrors.confirmPassword =
-        "Confirm password cannot be empty";
+      validationErrors.confirmPassword = "Confirm password cannot be empty";
     } else if (confirmPassword.length < 8) {
       validationErrors.confirmPassword =
         "Password must be at least 8 characters";
@@ -111,11 +109,6 @@ const Profile = () => {
       setErrors(validationErrors);
       return;
     }
-
-    setProfile({
-      name: name.trim(),
-      username: username.trim(),
-    });
 
     setName(name.trim());
     setUsername(username.trim());
@@ -220,9 +213,7 @@ const Profile = () => {
                   @{username || "username"}
                 </p>
 
-                <p className="mt-1 text-xs text-white/30">
-                  CodeSpace member
-                </p>
+                <p className="mt-1 text-xs text-white/30">CodeSpace member</p>
               </div>
             </div>
           </div>
@@ -274,9 +265,7 @@ const Profile = () => {
                 </div>
 
                 {errors.name && (
-                  <p className="mt-1.5 text-xs text-red-400">
-                    {errors.name}
-                  </p>
+                  <p className="mt-1.5 text-xs text-red-400">{errors.name}</p>
                 )}
               </div>
 
@@ -353,9 +342,7 @@ const Profile = () => {
             <div className="my-8 border-t border-white/10" />
 
             <div className="mb-5">
-              <h3 className="text-sm font-semibold text-white">
-                Security
-              </h3>
+              <h3 className="text-sm font-semibold text-white">Security</h3>
 
               <p className="mt-1 text-xs text-white/40">
                 Manage your account security.
@@ -388,9 +375,7 @@ const Profile = () => {
                   </div>
                 </div>
 
-                <span className="text-xs text-white/40">
-                  Change
-                </span>
+                <span className="text-xs text-white/40">Change</span>
               </button>
             )}
 
@@ -451,9 +436,7 @@ const Profile = () => {
 
                       <button
                         type="button"
-                        onClick={() =>
-                          setShowCurrentPassword((prev) => !prev)
-                        }
+                        onClick={() => setShowCurrentPassword((prev) => !prev)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white"
                       >
                         {showCurrentPassword ? (
@@ -506,9 +489,7 @@ const Profile = () => {
 
                       <button
                         type="button"
-                        onClick={() =>
-                          setShowNewPassword((prev) => !prev)
-                        }
+                        onClick={() => setShowNewPassword((prev) => !prev)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white"
                       >
                         {showNewPassword ? (
@@ -560,9 +541,7 @@ const Profile = () => {
 
                       <button
                         type="button"
-                        onClick={() =>
-                          setShowConfirmPassword((prev) => !prev)
-                        }
+                        onClick={() => setShowConfirmPassword((prev) => !prev)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white"
                       >
                         {showConfirmPassword ? (

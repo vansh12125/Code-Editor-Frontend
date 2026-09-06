@@ -11,48 +11,28 @@ import {
   Plus,
   X,
 } from "lucide-react";
-
-interface Project {
-  id: string;
-  name: string;
-  language: string;
-  updatedAt: string;
-}
-
-const INITIAL_PROJECTS: Project[] = [
-  {
-    id: "proj-1",
-    name: "CodeSpace API",
-    language: "TypeScript",
-    updatedAt: "Updated 2 hours ago",
-  },
-  {
-    id: "proj-2",
-    name: "Portfolio Website",
-    language: "React",
-    updatedAt: "Updated yesterday",
-  },
-  {
-    id: "proj-3",
-    name: "Algorithm Practice",
-    language: "Python",
-    updatedAt: "Updated 3 days ago",
-  },
-];
-
-const AVAILABLE_LANGUAGES = ["HTML", "Express", "React", "Next"] as const;
+import { useAuth } from "@/hooks";
+import type { Project } from "@/interfaces";
+import { Languages } from "@/interfaces";
+import type { Languages as LanguagesType } from "@/interfaces";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  console.log(user);
 
-  const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
+  const AVAILABLE_LANGUAGES: ("HTML" | "EXPRESS" | "REACT" | "NEXT")[] =
+    Object.values(Languages);
+
+  const projects: Project[] = user?.projects ?? [];
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
     null,
   );
 
   const [projectName, setProjectName] = useState("");
-  const [selectedLanguage, setSelectedLanguage] =
-    useState<string>("TypeScript");
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguagesType>(
+    Languages.HTML,
+  );
 
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -60,10 +40,6 @@ const Dashboard = () => {
 
   const langDropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const user = {
-    name: "Alex",
-  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -85,17 +61,6 @@ const Dashboard = () => {
   const handleCreateProject = () => {
     const trimmedName = projectName.trim();
     if (!trimmedName) return;
-
-    const newProject: Project = {
-      id: `proj-${Date.now()}`,
-      name: trimmedName,
-      language: selectedLanguage,
-      updatedAt: "Updated just now",
-    };
-
-    setProjects((prev) => [newProject, ...prev]);
-    setProjectName("");
-    navigate(`/ide/${newProject.id}`);
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -112,6 +77,13 @@ const Dashboard = () => {
       inputRef.current?.focus();
     }, 100);
   };
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/signin");
+      return;
+    }
+  }, [user, navigate]);
 
   return (
     <div className="flex h-full w-full overflow-hidden">
@@ -263,7 +235,7 @@ const Dashboard = () => {
             </p>
 
             <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Good afternoon, {user.name}
+              Good afternoon, {user?.name}
             </h1>
 
             <p className="mt-2 text-sm text-white/60">

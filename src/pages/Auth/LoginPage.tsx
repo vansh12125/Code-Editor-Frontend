@@ -1,12 +1,16 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
+import type{ NavigateFunction} from "react-router-dom";
 import { Eye, EyeClosed } from "lucide-react";
 import type { LoginUserRequest } from "@/interfaces";
-import { LoginUser } from "@/service/authService";
+import { LoginUser, GetUserProfile } from "@/service/authService";
 import { validateLogin } from "@/service";
+import { useAuth } from "@/hooks";
+import { login } from "@/redux/authSlice";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const { dispatch } = useAuth();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errors, setErrors] = useState<{
@@ -14,6 +18,7 @@ const LoginPage = () => {
     password?: string;
     responseError?: string;
   }>({});
+  const navigate:NavigateFunction=useNavigate();
 
   const handleFormSubmit = async () => {
     const validationErrors = validateLogin(username, password);
@@ -37,7 +42,17 @@ const LoginPage = () => {
 
       return;
     } else if (response.success) {
-      console.log("Success");
+      const userResponse = await GetUserProfile();
+
+      if (userResponse.success) {
+        dispatch(
+          login({
+            user: userResponse.data,
+          }),
+        );
+
+        navigate("/dashboard");
+      }
     }
   };
 
