@@ -15,6 +15,7 @@ export const SecuredNavbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const handleLogout = useLogout();
   const { user } = useAuth();
+  const [selected, setSelected] = useState<"dashboard" | "projects">();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -45,15 +46,17 @@ export const SecuredNavbar = () => {
         <div className="hidden items-center gap-1 sm:flex">
           <Link
             to="/dashboard"
-            className="flex items-center gap-1.5 rounded-xl bg-white/10 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/15"
+            className={`flex items-center gap-1.5 rounded-xl  px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/15 ${selected === "dashboard" ? "bg-white/10" : ""}`}
+             onClick={(e)=>{setSelected("dashboard")}}
           >
             <LayoutDashboard size={14} />
             Dashboard
           </Link>
 
           <Link
-            to="/dashboard"
-            className="rounded-xl px-3 py-1.5 text-xs font-medium text-white/70 transition hover:bg-white/10 hover:text-white"
+            to="/projects"
+            className={`flex items-center gap-1.5 rounded-xl  px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/15 ${selected === "projects" ? "bg-white/10" : ""}`}
+            onClick={(e)=>{setSelected("projects")}}
           >
             Projects
           </Link>

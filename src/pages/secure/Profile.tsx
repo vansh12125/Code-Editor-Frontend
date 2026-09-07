@@ -34,7 +34,7 @@ const Profile = () => {
 
   const [name, setName] = useState(user?.name ?? "");
   const [username, setUsername] = useState(user?.username ?? "");
-  const [email] = useState<string>(user?.email??"");
+  const [email] = useState<string>(user?.email ?? "");
 
   const [showPasswordBox, setShowPasswordBox] = useState(false);
 
@@ -50,8 +50,7 @@ const Profile = () => {
   const [saved, setSaved] = useState(false);
   const [passwordChanged, setPasswordChanged] = useState(false);
 
-  const hasProfileChanges =
-    name !== user?.name || username !== user?.username;
+  const hasProfileChanges = name !== user?.name || username !== user?.username;
 
   const hasProfileErrors = Boolean(errors.name) || Boolean(errors.username);
 

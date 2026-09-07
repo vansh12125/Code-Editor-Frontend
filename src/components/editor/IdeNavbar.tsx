@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Code2, Play, Save } from "lucide-react";
 interface IdeNavbarProps {
   isDirty: boolean;
@@ -6,6 +6,7 @@ interface IdeNavbarProps {
 }
 
 const IdeNavbar = ({ isDirty, onSave }: IdeNavbarProps) => {
+  const navigate = useNavigate();
   return (
     <header className="flex h-12 items-center justify-between border-b border-white/10 bg-neutral-950 px-4 text-white">
       <div className="flex items-center gap-4">
@@ -20,11 +21,15 @@ const IdeNavbar = ({ isDirty, onSave }: IdeNavbarProps) => {
         <div className="h-5 w-px bg-white/10" />
 
         <Link
-          to="/dashboard"
+          to=".."
+          onClick={(e) => {
+            e.preventDefault();
+            navigate(-1);
+          }}
           className="flex items-center gap-1.5 text-xs text-white/50 hover:text-white"
         >
           <ArrowLeft size={14} />
-          Dashboard
+          Back
         </Link>
       </div>
 

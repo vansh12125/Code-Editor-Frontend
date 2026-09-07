@@ -52,6 +52,13 @@ const authSlice = createSlice({
     clearError(state) {
       state.error = null;
     },
+    removeProject(state, action: PayloadAction<string>) {
+      if (state.user) {
+        state.user.projects = state.user.projects.filter(
+          (project) => project.id !== action.payload,
+        );
+      }
+    },
   },
 });
 
@@ -63,6 +70,7 @@ export const {
   clearError,
   finishInitialization,
   setError,
-  addProject
+  addProject,
+  removeProject
 } = authSlice.actions;
 export default authSlice.reducer;

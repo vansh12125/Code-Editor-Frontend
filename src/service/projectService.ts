@@ -119,4 +119,35 @@ const SaveFileInDb = async (
   }
 };
 
-export { CreateProject, GetProjectById, GetProjectTree,SaveFileInDb };
+const DeleteProject = async (
+  projectId: string,
+): Promise<Response<unknown, string | null>> => {
+  try {
+    const response = await apiClient.delete(`/projects/${projectId}`);
+
+    return {
+      success: true,
+      data: response.data,
+      errors: null,
+    };
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      return {
+        success: false,
+        data: null,
+        errors:
+          typeof error.response?.data?.errors === "string"
+            ? error.response.data.errors
+            : "Something went wrong",
+      };
+    }
+
+    return {
+      success: false,
+      data: null,
+      errors: "Something went wrong",
+    };
+  }
+};
+
+export { CreateProject, GetProjectById, GetProjectTree,SaveFileInDb,DeleteProject };
