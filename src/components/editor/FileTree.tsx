@@ -15,6 +15,7 @@ import type { ProjectTree } from "@/interfaces";
 interface FileTreeProps {
   node: ProjectTree;
   level?: number;
+  selectedFilePath?: string;
   onFileSelect: (file: ProjectTree) => void;
 }
 
@@ -64,7 +65,12 @@ const getFileIcon = (extension?: string) => {
   }
 };
 
-const FileTree = ({ node, level = 0, onFileSelect }: FileTreeProps) => {
+const FileTree = ({
+  node,
+  level = 0,
+  selectedFilePath,
+  onFileSelect,
+}: FileTreeProps) => {
   const [isOpen, setIsOpen] = useState(level === 0);
 
   if (node.type === "directory") {
@@ -73,7 +79,7 @@ const FileTree = ({ node, level = 0, onFileSelect }: FileTreeProps) => {
         <button
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
-          className="flex w-full items-center gap-1.5 rounded-md py-1.5 text-left text-xs font-medium text-white/75 transition hover:bg-white/10 hover:text-white"
+          className="flex w-full items-center gap-1.5 rounded-md py-1.5 text-left text-xs font-medium text-white/75 transition hover:bg-white/10 hover:text-white select-none"
           style={{ paddingLeft: `${level * 16 + 4}px` }}
         >
           <ChevronRight
@@ -105,6 +111,7 @@ const FileTree = ({ node, level = 0, onFileSelect }: FileTreeProps) => {
                   key={child.path}
                   node={child}
                   level={level + 1}
+                  selectedFilePath={selectedFilePath}
                   onFileSelect={onFileSelect}
                 />
               ))}
@@ -114,17 +121,22 @@ const FileTree = ({ node, level = 0, onFileSelect }: FileTreeProps) => {
     );
   }
 
+  const isSelected = selectedFilePath === node.path;
+
   return (
     <button
       type="button"
       onClick={() => onFileSelect(node)}
-      className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs text-white/65 transition hover:bg-white/10 hover:text-white"
+      className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs transition select-none ${
+        isSelected
+          ? "bg-white/15 text-white"
+          : "text-white/65 hover:bg-white/10 hover:text-white"
+      }`}
       style={{ paddingLeft: `${level * 16 + 8}px` }}
     >
       {getFileIcon(node.extension || node.name)}
-      <span className="truncate">
-        {level === 0 ? node.projectName : node.name}
-      </span>
+
+      <span className="truncate">{node.name}</span>
     </button>
   );
 };

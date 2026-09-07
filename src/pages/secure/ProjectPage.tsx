@@ -1,44 +1,106 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@/hooks";
 import { useParams, useNavigate } from "react-router-dom";
 import { GetProjectTree } from "@/service/projectService";
 import type { ProjectTree } from "@/interfaces";
-import { FileTree } from "@/components/editor";
+import { FileTree, CodeEditor, IdeNavbar } from "@/components/editor";
+import { useAuth } from "@/hooks";
+import { SaveFileInDb } from "@/service/projectService";
 
 const ProjectPage = () => {
-  const [projectTree, setProjectTree] = useState<ProjectTree | null>(null);
-
-  const { user } = useAuth();
   const { projectId } = useParams();
   const navigate = useNavigate();
-
-  //   const printProjectTree = (root: ProjectTree) => {
-  //     console.log(root);
-  //     if (!root.children) {
-  //       return;
-  //     }
-  //     root.children.forEach((node) => {
-  //       printProjectTree(node);
-  //     });
-  //   };
+  const [projectTree, setProjectTree] = useState<ProjectTree | null>(null);
+  const [selectedFile, setSelectedFile] = useState<ProjectTree | null>(null);
+  const [savedContent, setSavedContent] = useState("");
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchProjectTree = async () => {
-      if (typeof projectId !== "string") {
-        return;
-      }
+      if (!projectId) return;
 
       const response = await GetProjectTree(projectId);
 
-      if (!response.success) {
-        console.log("Not Found");
-        return;
-      }
+      if (!response.success || !response.data) return;
+
       setProjectTree(response.data);
     };
 
     fetchProjectTree();
   }, [projectId]);
+
+  const handleFileSelect = (file: ProjectTree) => {
+    setSelectedFile(file);
+    setSavedContent(file.content ?? "");
+  };
+
+  const handleFileChange = (value: string) => {
+    if (!selectedFile) {
+      return;
+    }
+
+    setSelectedFile((prev) => {
+      if (!prev) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        content: value,
+      };
+    });
+
+    setProjectTree((prev) => {
+      if (!prev) {
+        return prev;
+      }
+
+      const updateFile = (node: ProjectTree): ProjectTree => {
+        if (node.type === "file" && node.path === selectedFile.path) {
+          return {
+            ...node,
+            content: value,
+          };
+        }
+
+        if (node.type === "directory") {
+          return {
+            ...node,
+            children: node.children.map(updateFile),
+          };
+        }
+
+        return node;
+      };
+
+      return updateFile(prev);
+    });
+  };
+
+  const isDirty = selectedFile?.content !== savedContent;
+
+  const handleSave = async () => {
+    if (!selectedFile || !isDirty || !projectId) {
+      return;
+    }
+
+    const filePath = selectedFile.path
+      .replace(/\\/g, "/")
+      .replace(`projects/${projectId}/`, "");
+
+    const response = await SaveFileInDb(
+      {
+        path: filePath,
+        content: selectedFile.content ?? "",
+      },
+      projectId,
+    );
+
+    if (!response.success) {
+      return;
+    }
+
+    setSavedContent(selectedFile.content ?? "");
+  };
 
   useEffect(() => {
     if (!user) {
@@ -48,26 +110,34 @@ const ProjectPage = () => {
   }, [user, navigate]);
 
   return (
-    <div className="flex h-screen w-full bg-neutral-950 text-white">
-      <aside className="w-64 shrink-0 border-r border-white/10 bg-black/30">
-        <div className="flex h-12 items-center border-b border-white/10 px-4">
-          <span className="text-sm font-semibold">Explorer</span>
-        </div>
-
-        <div className="overflow-y-auto p-2">
+    <>
+      <IdeNavbar isDirty={isDirty} onSave={handleSave} />
+      <div className="flex h-screen bg-black text-white">
+        <aside className="w-64 shrink-0 border-r border-white/10 p-3">
           {projectTree && (
             <FileTree
               node={projectTree}
-              onFileSelect={(file) => {
-                console.log(file.content);
-              }}
+              onFileSelect={handleFileSelect}
+              selectedFilePath={selectedFile?.path}
             />
           )}
-        </div>
-      </aside>
+        </aside>
 
-      <main className="min-w-0 flex-1"></main>
-    </div>
+        <main className="min-w-0 flex-1 w-screen">
+          {selectedFile ? (
+            <CodeEditor
+              content={selectedFile.content}
+              language={selectedFile.extension ?? ""}
+              onChange={handleFileChange}
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-white/40">
+              Select a file to start editing
+            </div>
+          )}
+        </main>
+      </div>
+    </>
   );
 };
 

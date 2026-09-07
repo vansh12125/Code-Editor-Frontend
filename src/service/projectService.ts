@@ -88,4 +88,35 @@ const GetProjectTree = async (projectId: string) => {
   }
 };
 
-export { CreateProject, GetProjectById, GetProjectTree };
+const SaveFileInDb = async (
+  fileData: { path: string; content: string },
+  projectId: string,
+) => {
+  try {
+    const response = await apiClient.patch(`/projects/${projectId}/files`,fileData);
+    return {
+      success: true,
+      data: response.data.data,
+      errors: null,
+    };
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      return {
+        success: false,
+        data: null,
+        errors:
+          typeof error.response?.data?.errors === "string"
+            ? error.response.data.errors
+            : "Something went wrong",
+      };
+    }
+
+    return {
+      success: false,
+      data: null,
+      errors: "Something went wrong",
+    };
+  }
+};
+
+export { CreateProject, GetProjectById, GetProjectTree,SaveFileInDb };
