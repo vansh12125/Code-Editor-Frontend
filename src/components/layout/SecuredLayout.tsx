@@ -10,7 +10,7 @@ const SecuredLayout = () => {
           backgroundImage: "url('/images/dashboard-bg.jpg')",
         }}
       />
-      <div className="fixed inset-0 z-0 bg-black/30" />
+      <div className="fixed inset-0 z-0 bg-black/10" />
 
       <SecuredNavbar />
 

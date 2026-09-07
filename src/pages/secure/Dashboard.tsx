@@ -12,21 +12,25 @@ import {
   X,
 } from "lucide-react";
 import { useAuth } from "@/hooks";
+import { addProject } from "@/redux/authSlice";
 import type { Project } from "@/interfaces";
 import { Languages, LanguageIcons } from "@/interfaces";
 import type { Languages as LanguagesType } from "@/interfaces";
 import { validateProjectName, CreateProject, formatDateTime } from "@/service";
 
 const LanguageIcon = ({ language }: { language: LanguagesType }) => {
-  const Icon = LanguageIcons[language];
+  const Icon = language ? LanguageIcons[language] : null;
+
+  if (!Icon) {
+    return <FileCode2 size={16} className="text-white/50" />;
+  }
 
   return <Icon size={16} />;
 };
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  console.log(user);
+  const { user, dispatch } = useAuth();
 
   const AVAILABLE_LANGUAGES: ("HTML" | "EXPRESS" | "REACT" | "NEXT")[] =
     Object.values(Languages);
@@ -88,12 +92,22 @@ const Dashboard = () => {
       language: selectedLanguage,
     });
 
-    if (!response.success) {
+    if (!response.success || !response.data) {
       setErrors(response.errors ?? "Something went wrong");
-    } else {
-      console.log(response.data);
-      setSuccess("Project created successfully");
+      return;
     }
+
+    if (!response.data || !response.data.id) {
+      setErrors("Project was created but no project data was returned");
+      return;
+    }
+
+    dispatch(addProject(response.data));
+    setSuccess("Project created successfully. Redirecting to project...");
+
+    setTimeout(() => {
+      navigate(`/ide/${response.data?.id}`);
+    }, 2000);
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -209,8 +223,7 @@ const Dashboard = () => {
 
         <div className="flex-1 space-y-1 overflow-y-auto p-2.5">
           {projects.map((project) => {
-            const isSelected = selectedProjectId === project.id;
-
+            const isSelected = selectedProjectId;
             return (
               <button
                 key={project.id}

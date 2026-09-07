@@ -14,4 +14,14 @@ interface CreateProjectRequest {
   language: Languages;
 }
 
-export type { Project, CreateProjectRequest };
+interface ProjectTree{
+  path:string;
+  children:ProjectTree[];
+  name:string;
+  type:"directory"|"file";
+  extension?:string;
+  content?:string;
+  projectName?: string;
+}
+
+export type { Project, CreateProjectRequest,ProjectTree };

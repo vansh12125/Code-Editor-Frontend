@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeClosed } from "lucide-react";
 import { validateRegister } from "@/service/";
 import { RegisterUserByUsername } from "@/service/authService";
@@ -25,6 +25,8 @@ const RegisterPage = () => {
     terms?: string;
     responseError?: string;
   }>({});
+  const [success, setSuccess] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     const validationErrors = validateRegister(
@@ -33,7 +35,7 @@ const RegisterPage = () => {
       email,
       password,
       confirmPassword,
-      terms
+      terms,
     );
 
     if (Object.keys(validationErrors).length > 0) {
@@ -42,6 +44,7 @@ const RegisterPage = () => {
     }
 
     setErrors({});
+    setSuccess("");
     setLoading(true);
 
     try {
@@ -59,8 +62,10 @@ const RegisterPage = () => {
 
         return;
       }
-
-      console.log("Registration successful");
+      setSuccess("Registered Successfully. Redirecting to sign in...");
+      setTimeout(() => {
+        navigate(`/signin`);
+      }, 2000);
     } finally {
       setLoading(false);
     }
@@ -150,7 +155,9 @@ const RegisterPage = () => {
                     Name
                   </label>
                   {errors.name && (
-                    <p className="mb-1 text-[11px] text-red-400">{errors.name}</p>
+                    <p className="mb-1 text-[11px] text-red-400">
+                      {errors.name}
+                    </p>
                   )}
 
                   <input
@@ -353,6 +360,11 @@ const RegisterPage = () => {
                 {errors.responseError && (
                   <p className="text-center text-xs text-red-400">
                     {errors.responseError}
+                  </p>
+                )}
+                {success && (
+                  <p className="text-center text-xs text-green-400">
+                    {success}
                   </p>
                 )}
 

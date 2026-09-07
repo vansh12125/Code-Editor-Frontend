@@ -1,5 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { User } from "@/interfaces";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { User,Project } from "@/interfaces";
 
 interface initialType {
   user: User | null;
@@ -21,7 +21,7 @@ const authSlice = createSlice({
   name: "authInfo",
   initialState: initialState,
   reducers: {
-    login(state, action) {
+    login(state, action: PayloadAction<{ user: User }>) {
       state.user = action.payload.user;
       state.isAuthenticated = true;
       state.loading = false;
@@ -33,16 +33,19 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
-    setLoading(state, action) {
+    setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },
     finishInitialization(state) {
       state.initialized = true;
     },
-    updateUser(state, action) {
+    updateUser(state, action: PayloadAction<User>) {
       state.user = action.payload;
     },
-    setError(state, action) {
+    addProject(state, action:PayloadAction<Project>) {
+      state.user?.projects.push(action.payload);
+    },
+    setError(state, action:PayloadAction<unknown>) {
       state.error = action.payload;
       state.loading = false;
     },
@@ -60,5 +63,6 @@ export const {
   clearError,
   finishInitialization,
   setError,
+  addProject
 } = authSlice.actions;
 export default authSlice.reducer;

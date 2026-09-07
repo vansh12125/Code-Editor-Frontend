@@ -36,7 +36,7 @@ export const SecuredNavbar = () => {
     <header className="fixed top-4 left-1/2 z-40 w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2">
       <nav className="flex h-14 items-center justify-between rounded-2xl border border-white/15 bg-black/40 px-4 backdrop-blur-xl">
         <Link
-          to="/dashboard"
+          to="/"
           className="text-base font-bold tracking-tight text-white transition hover:opacity-90"
         >
           CodeSpace
