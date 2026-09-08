@@ -93,7 +93,10 @@ const SaveFileInDb = async (
   projectId: string,
 ) => {
   try {
-    const response = await apiClient.patch(`/projects/${projectId}/files`,fileData);
+    const response = await apiClient.patch(
+      `/projects/${projectId}/files`,
+      fileData,
+    );
     return {
       success: true,
       data: response.data.data,
@@ -150,4 +153,42 @@ const DeleteProject = async (
   }
 };
 
-export { CreateProject, GetProjectById, GetProjectTree,SaveFileInDb,DeleteProject };
+const DeleteFile = async (projectId: string, path: string) => {
+  try {
+    const response = await apiClient.delete(`/projects/${projectId}/files`, {
+      data: { path },
+    });
+
+    return {
+      success: true,
+      data: response.data,
+      errors: null,
+    };
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      return {
+        success: false,
+        data: null,
+        errors:
+          typeof error.response?.data?.errors === "string"
+            ? error.response.data.errors
+            : "Something went wrong",
+      };
+    }
+
+    return {
+      success: false,
+      data: null,
+      errors: "Something went wrong",
+    };
+  }
+};
+
+export {
+  CreateProject,
+  GetProjectById,
+  GetProjectTree,
+  SaveFileInDb,
+  DeleteProject,
+  DeleteFile,
+};

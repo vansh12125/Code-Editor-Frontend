@@ -121,10 +121,59 @@ const getLanguage = (language: string): string => {
 };
 
 const CodeEditor = ({ content, language, onChange }: CodeEditorProps) => {
+  const lang: string = getLanguage(language);
+
+  if (lang === "xml") {
+    return (
+      <iframe
+        srcDoc={`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <style>
+          html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            select:none;
+          }
+
+          body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:#222222;
+          }
+
+          svg {
+            width: 80%;
+            height: 80%;
+            max-width: 800px;
+            max-height: 800px;
+          }
+        </style>
+      </head>
+      <body>
+        ${content}
+      </body>
+    </html>
+  `}
+        className="h-full w-full border-0 select-none"
+        sandbox=""
+      />
+    );
+  }
+  if (lang === "plaintext") {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-[#222222] select-none">
+        Preview not available
+      </div>
+    );
+  }
   return (
     <Editor
       height="100%"
-      language={getLanguage(language)}
+      language={lang}
       className="select-none"
       value={content ?? ""}
       theme="vs-dark"

@@ -3,24 +3,28 @@ import { useParams, useNavigate } from "react-router-dom";
 import { GetProjectTree } from "@/service/projectService";
 import type { ProjectTree } from "@/interfaces";
 import { FileTree, CodeEditor, IdeNavbar } from "@/components/editor";
-import { useAuth } from "@/hooks";
+import { useAuth, useProject } from "@/hooks";
+import {
+  setProject,
+  setSelectedFile,
+  updateFileContent,
+  markFileSaved,
+} from "@/redux/projectSlice";
 import { SaveFileInDb } from "@/service/projectService";
-import {FileContextMenu} from "@/components/editor/ContextMenu"
+import { FileContextMenu } from "@/components/editor/ContextMenu";
 
 const ProjectPage = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
-  const [projectTree, setProjectTree] = useState<ProjectTree | null>(null);
-  const [selectedFile, setSelectedFile] = useState<ProjectTree | null>(null);
-  const [savedContent, setSavedContent] = useState("");
   const { user } = useAuth();
+  const { projectTree, selectedFile, savedContents, dispatch } = useProject();
 
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
     path: string;
     name: string;
-    type:"file"|"directory"
+    type: "file" | "directory";
   } | null>(null);
 
   useEffect(() => {
@@ -43,7 +47,7 @@ const ProjectPage = () => {
       y: e.clientY,
       path: node.path,
       name: node.name,
-      type:node.type
+      type: node.type,
     });
   };
 
@@ -55,61 +59,42 @@ const ProjectPage = () => {
 
       if (!response.success || !response.data) return;
 
-      setProjectTree(response.data);
+      dispatch(
+        setProject({
+          projectId: projectId,
+          projectName: response.data.name,
+          projectTree: response.data,
+        }),
+      );
     };
 
     fetchProjectTree();
-  }, [projectId]);
+  }, [projectId, dispatch]);
 
   const handleFileSelect = (file: ProjectTree) => {
-    setSelectedFile(file);
-    setSavedContent(file.content ?? "");
+    dispatch(
+      setSelectedFile({
+        path: file.path,
+        content: file.content ?? "",
+        extension: file.extension ?? file.name,
+      }),
+    );
   };
 
   const handleFileChange = (value: string) => {
-    if (!selectedFile) {
-      return;
-    }
+    if (!selectedFile) return;
 
-    setSelectedFile((prev) => {
-      if (!prev) {
-        return prev;
-      }
-
-      return {
-        ...prev,
+    dispatch(
+      updateFileContent({
+        path: selectedFile.path,
         content: value,
-      };
-    });
-
-    setProjectTree((prev) => {
-      if (!prev) {
-        return prev;
-      }
-
-      const updateFile = (node: ProjectTree): ProjectTree => {
-        if (node.type === "file" && node.path === selectedFile.path) {
-          return {
-            ...node,
-            content: value,
-          };
-        }
-
-        if (node.type === "directory") {
-          return {
-            ...node,
-            children: node.children.map(updateFile),
-          };
-        }
-
-        return node;
-      };
-
-      return updateFile(prev);
-    });
+      }),
+    );
   };
 
-  const isDirty = selectedFile?.content !== savedContent;
+  const isDirty = selectedFile
+    ? selectedFile.content !== savedContents[selectedFile.path]
+    : false;
 
   const handleSave = async () => {
     if (!selectedFile || !isDirty || !projectId) {
@@ -123,7 +108,7 @@ const ProjectPage = () => {
     const response = await SaveFileInDb(
       {
         path: filePath,
-        content: selectedFile.content ?? "",
+        content: selectedFile.content,
       },
       projectId,
     );
@@ -132,7 +117,12 @@ const ProjectPage = () => {
       return;
     }
 
-    setSavedContent(selectedFile.content ?? "");
+    dispatch(
+      markFileSaved({
+        path: selectedFile.path,
+        content: selectedFile.content,
+      }),
+    );
   };
 
   useEffect(() => {
@@ -143,15 +133,21 @@ const ProjectPage = () => {
   }, [user, navigate]);
 
   return (
-    <>
+    <div className="flex h-screen flex-col bg-black text-white">
       <IdeNavbar isDirty={isDirty} onSave={handleSave} />
-      <div className="flex h-screen bg-black text-white" onContextMenu={(e)=>{e.preventDefault()}}>
+
+      <div
+        className="flex min-h-0 flex-1"
+        onContextMenu={(e) => {
+          e.preventDefault();
+        }}
+      >
         <aside className="w-64 shrink-0 border-r border-white/10 p-3">
           {projectTree && (
             <FileTree
               node={projectTree}
               onFileSelect={handleFileSelect}
-              selectedFilePath={selectedFile?.path}
+              selectedFile={selectedFile?.path}
               onContextMenu={handleContextMenu}
             />
           )}
@@ -167,7 +163,7 @@ const ProjectPage = () => {
           />
         )}
 
-        <main className="min-w-0 flex-1 w-screen">
+        <main className="min-w-0 flex-1">
           {selectedFile ? (
             <CodeEditor
               content={selectedFile.content}
@@ -181,7 +177,7 @@ const ProjectPage = () => {
           )}
         </main>
       </div>
-    </>
+    </div>
   );
 };
 

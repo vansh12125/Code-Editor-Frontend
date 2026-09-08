@@ -6,10 +6,12 @@ interface IdeNavbarProps {
 }
 
 const IdeNavbar = ({ isDirty, onSave }: IdeNavbarProps) => {
+  console.log("hi");
+  
   const navigate = useNavigate();
   return (
     <header
-      className="flex h-12 items-center justify-between border-b border-white/10 bg-neutral-950 px-4 text-white"
+      className="flex h-12 items-center justify-between border-b border-white/10 bg-neutral-950 px-4 text-white select-none"
       onContextMenu={(e) => {
         e.preventDefault();
       }}

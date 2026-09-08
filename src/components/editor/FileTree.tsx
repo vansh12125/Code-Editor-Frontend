@@ -14,7 +14,7 @@ import type { ProjectTree } from "@/interfaces";
 interface FileTreeProps {
   node: ProjectTree;
   level?: number;
-  selectedFilePath?: string;
+  selectedFile?: string;
   onFileSelect: (file: ProjectTree) => void;
   onContextMenu: (e: React.MouseEvent, node: ProjectTree) => void;
 }
@@ -68,7 +68,7 @@ const getFileIcon = (extension?: string) => {
 const FileTree = ({
   node,
   level = 0,
-  selectedFilePath,
+  selectedFile,
   onFileSelect,
   onContextMenu,
 }: FileTreeProps) => {
@@ -113,7 +113,7 @@ const FileTree = ({
                   key={child.path}
                   node={child}
                   level={level + 1}
-                  selectedFilePath={selectedFilePath}
+                  selectedFile={selectedFile}
                   onFileSelect={onFileSelect}
                   onContextMenu={onContextMenu}
                 />
@@ -124,7 +124,7 @@ const FileTree = ({
     );
   }
 
-  const isSelected = selectedFilePath === node.path;
+  const isSelected = selectedFile === node.path;
 
   return (
     <>

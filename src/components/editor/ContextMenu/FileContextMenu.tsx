@@ -1,3 +1,8 @@
+import { DeleteFile } from "@/service/projectService";
+import { useParams } from "react-router-dom";
+import { useProject } from "@/hooks";
+import { deleteNode } from "@/redux/projectSlice";
+
 type FileContextMenuProps = {
   cordX: number;
   cordY: number;
@@ -13,9 +18,24 @@ const FileContextMenu = ({
   name,
   type,
 }: FileContextMenuProps) => {
-  console.log(path);
+  const { projectId } = useParams();
+  const { dispatch } = useProject();
 
-  const handleDeleteFile = () => {};
+  const handleDeleteFile = async () => {
+    if (!projectId || !path) {
+      return;
+    }
+    const response = await DeleteFile(
+      projectId,
+      path.replace(/\\/g, "/").replace(`projects/${projectId}/`, ""),
+    );
+
+    if (!response.success) {
+      console.log(response.errors);
+      return;
+    }
+    dispatch(deleteNode(path));
+  };
 
   const handleRenameFile = () => {};
 
