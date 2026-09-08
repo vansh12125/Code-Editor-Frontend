@@ -20,7 +20,6 @@ const ProjectPage = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  console.log("ProjectPage user:", user);
   const { projectTree, selectedFile, savedContents, dispatch } = useProject();
 
   const [contextMenu, setContextMenu] = useState<{
