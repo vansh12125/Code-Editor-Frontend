@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronRight, File, FileJson, Folder, FolderOpen } from "lucide-react";
+import { ChevronRight, File, FileJson, Folder, FolderOpen,DotIcon } from "lucide-react";
 import {
   DiHtml5,
   DiJavascript1,
@@ -17,6 +17,7 @@ interface FileTreeProps {
   selectedFile?: string;
   onFileSelect: (file: ProjectTree) => void;
   onContextMenu: (e: React.MouseEvent, node: ProjectTree) => void;
+  savedContents: Record<string, string>;
 }
 
 const getFileIcon = (extension?: string) => {
@@ -71,6 +72,7 @@ const FileTree = ({
   selectedFile,
   onFileSelect,
   onContextMenu,
+  savedContents,
 }: FileTreeProps) => {
   const [isOpen, setIsOpen] = useState(level === 0);
 
@@ -116,6 +118,7 @@ const FileTree = ({
                   selectedFile={selectedFile}
                   onFileSelect={onFileSelect}
                   onContextMenu={onContextMenu}
+                  savedContents={savedContents}
                 />
               ))}
           </div>
@@ -125,7 +128,7 @@ const FileTree = ({
   }
 
   const isSelected = selectedFile === node.path;
-
+  const isDirty = node.content !== savedContents[node.path];
   return (
     <>
       <button
@@ -141,7 +144,10 @@ const FileTree = ({
       >
         {getFileIcon(node.extension || node.name)}
 
-        <span className="truncate">{node.name}</span>
+        <span className="flex w-full items-center justify-between truncate">
+          <span className="truncate">{node.name}</span>
+          {isDirty && <span><DotIcon size={18} strokeWidth={5} /></span>}
+        </span>
       </button>
     </>
   );

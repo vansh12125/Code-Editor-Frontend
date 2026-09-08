@@ -6,7 +6,6 @@ interface IdeNavbarProps {
 }
 
 const IdeNavbar = ({ isDirty, onSave }: IdeNavbarProps) => {
-  console.log("hi");
   
   const navigate = useNavigate();
   return (

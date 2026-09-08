@@ -9,14 +9,18 @@ import {
   setSelectedFile,
   updateFileContent,
   markFileSaved,
+  clearProject
 } from "@/redux/projectSlice";
 import { SaveFileInDb } from "@/service/projectService";
 import { FileContextMenu } from "@/components/editor/ContextMenu";
 
 const ProjectPage = () => {
+  const [projectNotFound, setProjectNotFound] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const { projectId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  console.log("ProjectPage user:", user);
   const { projectTree, selectedFile, savedContents, dispatch } = useProject();
 
   const [contextMenu, setContextMenu] = useState<{
@@ -53,19 +57,33 @@ const ProjectPage = () => {
 
   useEffect(() => {
     const fetchProjectTree = async () => {
-      if (!projectId) return;
+      setLoading(true);
+      setProjectNotFound(false);
+
+      if (!projectId) {
+        setProjectNotFound(true);
+        setLoading(false);
+        return;
+      }
 
       const response = await GetProjectTree(projectId);
 
-      if (!response.success || !response.data) return;
+      if (!response.success || !response.data) {
+          dispatch(clearProject());
+        setProjectNotFound(true);
+        setLoading(false);
+        return;
+      }
 
       dispatch(
         setProject({
-          projectId: projectId,
+          projectId,
           projectName: response.data.name,
           projectTree: response.data,
         }),
       );
+
+      setLoading(false);
     };
 
     fetchProjectTree();
@@ -132,6 +150,32 @@ const ProjectPage = () => {
     }
   }, [user, navigate]);
 
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-black text-white">
+        Loading project...
+      </div>
+    );
+  }
+
+  if (projectNotFound) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center bg-black text-white">
+        <h1 className="text-2xl font-semibold">Project Not Found</h1>
+        <p className="mt-2 text-sm text-white/50">
+          The project you're looking for doesn't exist.
+        </p>
+        <button
+          type="button"
+          onClick={() => navigate("/dashboard")}
+          className="mt-6 rounded-md bg-white px-4 py-2 text-sm font-medium text-black hover:bg-white/90"
+        >
+          Back to Dashboard
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen flex-col bg-black text-white">
       <IdeNavbar isDirty={isDirty} onSave={handleSave} />
@@ -149,6 +193,7 @@ const ProjectPage = () => {
               onFileSelect={handleFileSelect}
               selectedFile={selectedFile?.path}
               onContextMenu={handleContextMenu}
+              savedContents={savedContents}
             />
           )}
         </aside>

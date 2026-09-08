@@ -55,6 +55,7 @@ const projectSlice = createSlice({
       state.projectId = action.payload.projectId;
       state.projectName = action.payload.projectName;
       state.projectTree = action.payload.projectTree;
+      state.selectedFile = null;
       state.savedContents = getSavedContents(action.payload.projectTree);
     },
 
