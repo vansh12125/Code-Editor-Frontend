@@ -9,7 +9,6 @@ import {
 } from "react-icons/di";
 import { GiSettingsKnobs } from "react-icons/gi";
 import { PiFileSvg, PiFilePng, PiFileJpg, PiFileMd } from "react-icons/pi";
-
 import type { ProjectTree } from "@/interfaces";
 
 interface FileTreeProps {
@@ -17,6 +16,7 @@ interface FileTreeProps {
   level?: number;
   selectedFilePath?: string;
   onFileSelect: (file: ProjectTree) => void;
+  onContextMenu: (e: React.MouseEvent, node: ProjectTree) => void;
 }
 
 const getFileIcon = (extension?: string) => {
@@ -70,6 +70,7 @@ const FileTree = ({
   level = 0,
   selectedFilePath,
   onFileSelect,
+  onContextMenu,
 }: FileTreeProps) => {
   const [isOpen, setIsOpen] = useState(level === 0);
 
@@ -79,6 +80,7 @@ const FileTree = ({
         <button
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
+          onContextMenu={(e) => onContextMenu(e, node)}
           className="flex w-full items-center gap-1.5 rounded-md py-1.5 text-left text-xs font-medium text-white/75 transition hover:bg-white/10 hover:text-white select-none"
           style={{ paddingLeft: `${level * 16 + 4}px` }}
         >
@@ -113,6 +115,7 @@ const FileTree = ({
                   level={level + 1}
                   selectedFilePath={selectedFilePath}
                   onFileSelect={onFileSelect}
+                  onContextMenu={onContextMenu}
                 />
               ))}
           </div>
@@ -124,20 +127,23 @@ const FileTree = ({
   const isSelected = selectedFilePath === node.path;
 
   return (
-    <button
-      type="button"
-      onClick={() => onFileSelect(node)}
-      className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs transition select-none ${
-        isSelected
-          ? "bg-white/15 text-white"
-          : "text-white/65 hover:bg-white/10 hover:text-white"
-      }`}
-      style={{ paddingLeft: `${level * 16 + 8}px` }}
-    >
-      {getFileIcon(node.extension || node.name)}
+    <>
+      <button
+        type="button"
+        onClick={() => onFileSelect(node)}
+        className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs transition select-none ${
+          isSelected
+            ? "bg-white/15 text-white"
+            : "text-white/65 hover:bg-white/10 hover:text-white"
+        }`}
+        style={{ paddingLeft: `${level * 16 + 8}px` }}
+        onContextMenu={(e) => onContextMenu(e, node)}
+      >
+        {getFileIcon(node.extension || node.name)}
 
-      <span className="truncate">{node.name}</span>
-    </button>
+        <span className="truncate">{node.name}</span>
+      </button>
+    </>
   );
 };
 

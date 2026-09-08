@@ -5,6 +5,7 @@ import type { ProjectTree } from "@/interfaces";
 import { FileTree, CodeEditor, IdeNavbar } from "@/components/editor";
 import { useAuth } from "@/hooks";
 import { SaveFileInDb } from "@/service/projectService";
+import {FileContextMenu} from "@/components/editor/ContextMenu"
 
 const ProjectPage = () => {
   const { projectId } = useParams();
@@ -13,6 +14,38 @@ const ProjectPage = () => {
   const [selectedFile, setSelectedFile] = useState<ProjectTree | null>(null);
   const [savedContent, setSavedContent] = useState("");
   const { user } = useAuth();
+
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    path: string;
+    name: string;
+    type:"file"|"directory"
+  } | null>(null);
+
+  useEffect(() => {
+    const handleClick = () => {
+      setContextMenu(null);
+    };
+
+    window.addEventListener("click", handleClick);
+
+    return () => {
+      window.removeEventListener("click", handleClick);
+    };
+  }, []);
+
+  const handleContextMenu = (e: React.MouseEvent, node: ProjectTree) => {
+    e.preventDefault();
+
+    setContextMenu({
+      x: e.clientX,
+      y: e.clientY,
+      path: node.path,
+      name: node.name,
+      type:node.type
+    });
+  };
 
   useEffect(() => {
     const fetchProjectTree = async () => {
@@ -112,16 +145,27 @@ const ProjectPage = () => {
   return (
     <>
       <IdeNavbar isDirty={isDirty} onSave={handleSave} />
-      <div className="flex h-screen bg-black text-white">
+      <div className="flex h-screen bg-black text-white" onContextMenu={(e)=>{e.preventDefault()}}>
         <aside className="w-64 shrink-0 border-r border-white/10 p-3">
           {projectTree && (
             <FileTree
               node={projectTree}
               onFileSelect={handleFileSelect}
               selectedFilePath={selectedFile?.path}
+              onContextMenu={handleContextMenu}
             />
           )}
         </aside>
+
+        {contextMenu && (
+          <FileContextMenu
+            cordX={contextMenu.x}
+            cordY={contextMenu.y}
+            path={contextMenu.path}
+            name={contextMenu.name}
+            type={contextMenu.type}
+          />
+        )}
 
         <main className="min-w-0 flex-1 w-screen">
           {selectedFile ? (
