@@ -31,7 +31,9 @@ const Contact = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -44,7 +46,11 @@ const Contact = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+    if (
+      !formData.name.trim() ||
+      !formData.email.trim() ||
+      !formData.message.trim()
+    ) {
       setError("Please fill out all required fields.");
       return;
     }
@@ -87,8 +93,8 @@ const Contact = () => {
               </h1>
 
               <p className="mt-3 text-sm leading-relaxed text-white/65">
-                Have questions about the platform, feedback on our runtimes, or need
-                assistance with your workspace? We’re always listening.
+                Have questions about the platform, feedback on our runtimes, or
+                need assistance with your workspace? We’re always listening.
               </p>
 
               <div className="mt-8 space-y-3.5">
@@ -97,12 +103,14 @@ const Contact = () => {
                     <Mail size={18} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs font-medium text-white/50">Direct Email</p>
+                    <p className="text-xs font-medium text-white/50">
+                      Direct Email
+                    </p>
                     <a
                       href="mailto:support@codespace.dev"
                       className="block truncate text-sm font-medium text-white transition hover:text-white/80"
                     >
-                      support@codespace.dev
+                      vanshsahu9838@gmail.com
                     </a>
                   </div>
                 </div>
@@ -112,7 +120,9 @@ const Contact = () => {
                     <MessageSquare size={18} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs font-medium text-white/50">Community Discord</p>
+                    <p className="text-xs font-medium text-white/50">
+                      Community Discord
+                    </p>
                     <p className="truncate text-sm font-medium text-white">
                       discord.gg/codespace
                     </p>
@@ -124,7 +134,9 @@ const Contact = () => {
                     <GitBranch size={18} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs font-medium text-white/50">Open Source</p>
+                    <p className="text-xs font-medium text-white/50">
+                      Open Source
+                    </p>
                     <a
                       href="https://github.com"
                       target="_blank"
@@ -164,8 +176,8 @@ const Contact = () => {
                     Message Sent
                   </h3>
                   <p className="mt-2 max-w-sm text-sm leading-relaxed text-white/65">
-                    Thank you for reaching out. We have received your inquiry and
-                    will respond via email as soon as possible.
+                    Thank you for reaching out. We have received your inquiry
+                    and will respond via email as soon as possible.
                   </p>
                   <button
                     type="button"
@@ -244,20 +256,41 @@ const Contact = () => {
                         onChange={handleChange}
                         className="w-full appearance-none rounded-xl border border-white/15 bg-[#141414] px-4 py-2.5 text-sm text-white outline-none transition focus:border-white/40 focus:ring-1 focus:ring-white/20"
                       >
-                        <option value="" className="bg-neutral-900 text-white/50">
+                        <option
+                          value=""
+                          className="bg-neutral-900 text-white/50"
+                        >
                           Select a subject...
                         </option>
-                        <option value="general" className="bg-neutral-900 text-white">
+                        <option
+                          value="general"
+                          className="bg-neutral-900 text-white"
+                        >
                           General Inquiry
                         </option>
-                        <option value="feedback" className="bg-neutral-900 text-white">
+                        <option
+                          value="feedback"
+                          className="bg-neutral-900 text-white"
+                        >
                           Feature Request & Feedback
                         </option>
-                        <option value="bug" className="bg-neutral-900 text-white">
+                        <option
+                          value="bug"
+                          className="bg-neutral-900 text-white"
+                        >
                           Bug Report / Runtime Issue
                         </option>
-                        <option value="partnership" className="bg-neutral-900 text-white">
+                        <option
+                          value="partnership"
+                          className="bg-neutral-900 text-white"
+                        >
                           Collaboration / Enterprise
+                        </option>
+                        <option
+                          value="other"
+                          className="bg-neutral-900 text-white"
+                        >
+                          Other
                         </option>
                       </select>
                     </div>
