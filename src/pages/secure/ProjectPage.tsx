@@ -1,24 +1,37 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { GetProjectTree } from "@/service/projectService";
-import type { ProjectTree } from "@/interfaces";
-import { FileTree, CodeEditor, IdeNavbar } from "@/components/editor";
-import { useAuth, useProject } from "@/hooks";
+import { useNavigate, useParams } from "react-router-dom";
+
 import {
+  GetProjectTree,
+  SaveFileInDb,
+  RenameFile,
+} from "@/service/projectService";
+
+import type { ProjectTree } from "@/interfaces";
+
+import { CodeEditor, FileTree, IdeNavbar } from "@/components/editor";
+
+import { FileContextMenu } from "@/components/editor/ContextMenu";
+
+import { useAuth, useProject } from "@/hooks";
+
+import {
+  clearProject,
+  markFileSaved,
+  renameNode,
   setProject,
   setSelectedFile,
   updateFileContent,
-  markFileSaved,
-  clearProject
 } from "@/redux/projectSlice";
-import { SaveFileInDb } from "@/service/projectService";
-import { FileContextMenu } from "@/components/editor/ContextMenu";
 
 const ProjectPage = () => {
   const [projectNotFound, setProjectNotFound] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [renamePath, setRenamePath] = useState<string | null>(null);
+
   const { projectId } = useParams();
   const navigate = useNavigate();
+
   const { user } = useAuth();
   const { projectTree, selectedFile, savedContents, dispatch } = useProject();
 
@@ -29,6 +42,42 @@ const ProjectPage = () => {
     name: string;
     type: "file" | "directory";
   } | null>(null);
+
+  const handleRename = async (node: ProjectTree, newName: string) => {
+    if (!projectId) {
+      return;
+    }
+
+    if (newName === node.name) {
+      setRenamePath(null);
+      return;
+    }
+
+    const oldPath = node.path
+      .replace(/\\/g, "/")
+      .replace(`projects/${projectId}/`, "");
+
+    const parentPath = oldPath.substring(0, oldPath.lastIndexOf("/"));
+
+    const newPath = parentPath ? `${parentPath}/${newName}` : newName;
+
+    const response = await RenameFile(projectId, oldPath, newPath);
+
+    if (!response.success) {
+      console.log(response.errors);
+      setRenamePath(null);
+      return;
+    }
+
+    dispatch(
+      renameNode({
+        path: node.path,
+        newName,
+      }),
+    );
+
+    setRenamePath(null);
+  };
 
   useEffect(() => {
     const handleClick = () => {
@@ -68,7 +117,7 @@ const ProjectPage = () => {
       const response = await GetProjectTree(projectId);
 
       if (!response.success || !response.data) {
-          dispatch(clearProject());
+        dispatch(clearProject());
         setProjectNotFound(true);
         setLoading(false);
         return;
@@ -99,7 +148,9 @@ const ProjectPage = () => {
   };
 
   const handleFileChange = (value: string) => {
-    if (!selectedFile) return;
+    if (!selectedFile) {
+      return;
+    }
 
     dispatch(
       updateFileContent({
@@ -142,10 +193,14 @@ const ProjectPage = () => {
     );
   };
 
+  const handleStartRename = (path: string) => {
+    setRenamePath(path);
+    setContextMenu(null);
+  };
+
   useEffect(() => {
     if (!user) {
       navigate("/signin");
-      return;
     }
   }, [user, navigate]);
 
@@ -161,9 +216,11 @@ const ProjectPage = () => {
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-black text-white">
         <h1 className="text-2xl font-semibold">Project Not Found</h1>
+
         <p className="mt-2 text-sm text-white/50">
           The project you're looking for doesn't exist.
         </p>
+
         <button
           type="button"
           onClick={() => navigate("/dashboard")}
@@ -193,6 +250,9 @@ const ProjectPage = () => {
               selectedFile={selectedFile?.path}
               onContextMenu={handleContextMenu}
               savedContents={savedContents}
+              renamePath={renamePath}
+              onRename={handleRename}
+              onStartRename={handleStartRename}
             />
           )}
         </aside>
@@ -204,6 +264,7 @@ const ProjectPage = () => {
             path={contextMenu.path}
             name={contextMenu.name}
             type={contextMenu.type}
+            onRename={handleStartRename}
           />
         )}
 

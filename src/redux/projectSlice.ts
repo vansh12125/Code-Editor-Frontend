@@ -135,6 +135,31 @@ const projectSlice = createSlice({
         state.selectedFile = null;
       }
     },
+    renameNode(
+      state,
+      action: PayloadAction<{ path: string; newName: string }>,
+    ) {
+      if (!state.projectTree) return;
+
+      const renameNodeCallback = (node: ProjectTree): ProjectTree => {
+        if (node.type !== "directory") {
+          return node.path === action.payload.path
+            ? { ...node, name: action.payload.newName }
+            : node;
+        }
+
+        return {
+          ...node,
+          children: node.children.map((child) =>
+            child.path === action.payload.path
+              ? { ...child, name: action.payload.newName }
+              : renameNodeCallback(child),
+          ),
+        };
+      };
+
+      state.projectTree = renameNodeCallback(state.projectTree);
+    },
   },
 });
 
@@ -145,6 +170,7 @@ export const {
   clearProject,
   deleteNode,
   markFileSaved,
+  renameNode,
 } = projectSlice.actions;
 
 export default projectSlice.reducer;

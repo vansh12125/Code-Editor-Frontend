@@ -1,5 +1,14 @@
-import { useState } from "react";
-import { ChevronRight, File, FileJson, Folder, FolderOpen,DotIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
+import {
+  ChevronRight,
+  File,
+  FileJson,
+  Folder,
+  FolderOpen,
+  DotIcon,
+} from "lucide-react";
+
 import {
   DiHtml5,
   DiJavascript1,
@@ -7,8 +16,11 @@ import {
   DiReact,
   DiNodejsSmall,
 } from "react-icons/di";
+
 import { GiSettingsKnobs } from "react-icons/gi";
+
 import { PiFileSvg, PiFilePng, PiFileJpg, PiFileMd } from "react-icons/pi";
+
 import type { ProjectTree } from "@/interfaces";
 
 interface FileTreeProps {
@@ -18,6 +30,9 @@ interface FileTreeProps {
   onFileSelect: (file: ProjectTree) => void;
   onContextMenu: (e: React.MouseEvent, node: ProjectTree) => void;
   savedContents: Record<string, string>;
+  onRename: (node: ProjectTree, newName: string) => void;
+  onStartRename: (path: string) => void;
+  renamePath: string | null;
 }
 
 const getFileIcon = (extension?: string) => {
@@ -43,6 +58,7 @@ const getFileIcon = (extension?: string) => {
 
     case ".node":
       return <DiNodejsSmall size={17} color="#339933" />;
+
     case ".env":
       return <GiSettingsKnobs size={15} color="#E5C07B" />;
 
@@ -53,8 +69,6 @@ const getFileIcon = (extension?: string) => {
       return <PiFilePng size={15} color="#A074C4" />;
 
     case ".jpg":
-      return <PiFileJpg size={15} color="#A074C4" />;
-
     case ".jpeg":
       return <PiFileJpg size={15} color="#A074C4" />;
 
@@ -73,32 +87,143 @@ const FileTree = ({
   onFileSelect,
   onContextMenu,
   savedContents,
+  onRename,
+  renamePath,
+  onStartRename,
 }: FileTreeProps) => {
   const [isOpen, setIsOpen] = useState(level === 0);
+
+  const handleRenameKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      submitRename();
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      onRename(node, node.name);
+    }
+  };
+
+  const getFileNameWithoutExtension = (name: string) => {
+    const lastDot = name.lastIndexOf(".");
+
+    if (lastDot <= 0) {
+      return name;
+    }
+
+    return name.slice(0, lastDot);
+  };
+
+  const getExtension = (name: string) => {
+    const lastDot = name.lastIndexOf(".");
+
+    if (lastDot <= 0) {
+      return "";
+    }
+
+    return name.slice(lastDot);
+  };
+
+  const [newName, setNewName] = useState(node.name);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const isRenaming = renamePath === node.path;
+
+  useEffect(() => {
+    if (!isRenaming) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    });
+  }, [isRenaming]);
+
+  const startRename = () => {
+    if (node.type === "file") {
+      setNewName(getFileNameWithoutExtension(node.name));
+    } else {
+      setNewName(node.name);
+    }
+
+    onStartRename(node.path);
+  };
+
+  const submitRename = () => {
+    const trimmedName = newName.trim();
+
+    if (!trimmedName) {
+      onRename(node, node.name);
+      return;
+    }
+
+    if (node.type === "file") {
+      const extension = getExtension(node.name);
+      onRename(node, `${trimmedName}${extension}`);
+      return;
+    }
+
+    onRename(node, trimmedName);
+  };
 
   if (node.type === "directory") {
     return (
       <div>
-        <button
-          type="button"
-          onClick={() => setIsOpen((prev) => !prev)}
+        <div
+          className="flex w-full select-none items-center gap-1.5 rounded-md py-1.5 text-left text-xs font-medium text-white/75 transition hover:bg-white/10 hover:text-white"
+          style={{
+            paddingLeft: `${level * 16 + 4}px`,
+          }}
           onContextMenu={(e) => onContextMenu(e, node)}
-          className="flex w-full items-center gap-1.5 rounded-md py-1.5 text-left text-xs font-medium text-white/75 transition hover:bg-white/10 hover:text-white select-none"
-          style={{ paddingLeft: `${level * 16 + 4}px` }}
         >
-          <ChevronRight
-            size={14}
-            className={`shrink-0 transition-transform ${
-              isOpen ? "rotate-90" : ""
-            }`}
-          />
+          <button
+            type="button"
+            onClick={() => setIsOpen((prev) => !prev)}
+            className="flex items-center gap-1.5"
+          >
+            <ChevronRight
+              size={14}
+              className={`shrink-0 transition-transform ${
+                isOpen ? "rotate-90" : ""
+              }`}
+            />
 
-          {isOpen ? <FolderOpen size={15} /> : <Folder size={15} />}
+            {isOpen ? <FolderOpen size={15} /> : <Folder size={15} />}
+          </button>
 
-          <span className="truncate">
-            {level === 0 ? node.projectName : node.name}
-          </span>
-        </button>
+          {isRenaming ? (
+            <span className="flex min-w-0 flex-1 items-center">
+              <input
+                ref={inputRef}
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                onKeyDown={handleRenameKeyDown}
+                onBlur={submitRename}
+                onClick={(e) => e.stopPropagation()}
+                className="min-w-0 flex-1 bg-transparent text-white outline-none"
+              />
+
+              <span className="shrink-0 text-white/50">
+                {getExtension(node.name)}
+              </span>
+            </span>
+          ) : (
+            <span
+              className="truncate"
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+                startRename();
+              }}
+            >
+              {node.name}
+            </span>
+          )}
+        </div>
 
         {isOpen && node.children?.length > 0 && (
           <div>
@@ -119,6 +244,9 @@ const FileTree = ({
                   onFileSelect={onFileSelect}
                   onContextMenu={onContextMenu}
                   savedContents={savedContents}
+                  onRename={onRename}
+                  renamePath={renamePath}
+                  onStartRename={onStartRename}
                 />
               ))}
           </div>
@@ -129,27 +257,66 @@ const FileTree = ({
 
   const isSelected = selectedFile === node.path;
   const isDirty = node.content !== savedContents[node.path];
+
   return (
-    <>
+    <div onContextMenu={(e) => onContextMenu(e, node)} className="w-full">
       <button
         type="button"
-        onClick={() => onFileSelect(node)}
-        className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs transition select-none ${
+        onClick={() => {
+          if (!isRenaming) {
+            onFileSelect(node);
+          }
+        }}
+        className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs select-none ${
           isSelected
             ? "bg-white/15 text-white"
             : "text-white/65 hover:bg-white/10 hover:text-white"
         }`}
-        style={{ paddingLeft: `${level * 16 + 8}px` }}
-        onContextMenu={(e) => onContextMenu(e, node)}
+        style={{
+          paddingLeft: `${level * 16 + 8}px`,
+        }}
       >
         {getFileIcon(node.extension || node.name)}
 
-        <span className="flex w-full items-center justify-between truncate">
-          <span className="truncate">{node.name}</span>
-          {isDirty && <span><DotIcon size={18} strokeWidth={5} /></span>}
+        <span className="flex w-full min-w-0 items-center justify-between">
+          {isRenaming ? (
+            <span className="flex min-w-0 flex-1 items-center">
+              <input
+                ref={inputRef}
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                onKeyDown={handleRenameKeyDown}
+                onBlur={submitRename}
+                onClick={(e) => e.stopPropagation()}
+                className="min-w-0 flex-1 bg-transparent text-white outline-none"
+              />
+
+              {getExtension(node.name) && (
+                <span className="shrink-0 text-white/50">
+                  {getExtension(node.name)}
+                </span>
+              )}
+            </span>
+          ) : (
+            <span
+              className="truncate"
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+                startRename();
+              }}
+            >
+              {node.name}
+            </span>
+          )}
+
+          {isDirty && (
+            <span className="shrink-0">
+              <DotIcon size={18} strokeWidth={5} />
+            </span>
+          )}
         </span>
       </button>
-    </>
+    </div>
   );
 };
 

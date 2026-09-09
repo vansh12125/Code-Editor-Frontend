@@ -184,6 +184,42 @@ const DeleteFile = async (projectId: string, path: string) => {
   }
 };
 
+const RenameFile = async (
+  projectId: string,
+  oldPath: string,
+  newPath: string,
+) => {
+  try {
+    const response = await apiClient.patch(`/projects/${projectId}/files/rename`, {
+      oldPath,
+      newPath,
+    });
+
+    return {
+      success: true,
+      data: response.data,
+      errors: null,
+    };
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      return {
+        success: false,
+        data: null,
+        errors:
+          typeof error.response?.data?.errors === "string"
+            ? error.response.data.errors
+            : "Something went wrong",
+      };
+    }
+
+    return {
+      success: false,
+      data: null,
+      errors: "Something went wrong",
+    };
+  }
+};
+
 export {
   CreateProject,
   GetProjectById,
@@ -191,4 +227,5 @@ export {
   SaveFileInDb,
   DeleteProject,
   DeleteFile,
+  RenameFile,
 };

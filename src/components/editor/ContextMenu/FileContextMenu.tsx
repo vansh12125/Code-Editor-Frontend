@@ -1,7 +1,7 @@
 import { DeleteFile } from "@/service/projectService";
-import { useParams } from "react-router-dom";
 import { useProject } from "@/hooks";
 import { deleteNode } from "@/redux/projectSlice";
+import { useParams } from "react-router-dom";
 
 type FileContextMenuProps = {
   cordX: number;
@@ -9,6 +9,7 @@ type FileContextMenuProps = {
   path: string;
   name: string;
   type: "file" | "directory";
+  onRename: (path: string) => void;
 };
 
 const FileContextMenu = ({
@@ -17,6 +18,7 @@ const FileContextMenu = ({
   path,
   name,
   type,
+  onRename,
 }: FileContextMenuProps) => {
   const { projectId } = useParams();
   const { dispatch } = useProject();
@@ -25,6 +27,7 @@ const FileContextMenu = ({
     if (!projectId || !path) {
       return;
     }
+
     const response = await DeleteFile(
       projectId,
       path.replace(/\\/g, "/").replace(`projects/${projectId}/`, ""),
@@ -34,10 +37,9 @@ const FileContextMenu = ({
       console.log(response.errors);
       return;
     }
+
     dispatch(deleteNode(path));
   };
-
-  const handleRenameFile = () => {};
 
   const copyContent = () => {};
 
@@ -59,7 +61,7 @@ const FileContextMenu = ({
 
       <div className="flex flex-col gap-0.5 text-zinc-700 dark:text-zinc-200">
         <button
-          onClick={handleRenameFile}
+          onClick={() => onRename(path)}
           className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-xs font-medium transition-colors hover:bg-zinc-100 active:bg-zinc-200 dark:hover:bg-zinc-800 dark:active:bg-zinc-700"
         >
           <svg
@@ -75,6 +77,7 @@ const FileContextMenu = ({
             <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
             <path d="m15 5 4 4" />
           </svg>
+
           <span>Rename</span>
         </button>
 
@@ -96,6 +99,7 @@ const FileContextMenu = ({
               <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
               <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
             </svg>
+
             <span>Copy Content</span>
           </button>
         )}
@@ -117,9 +121,10 @@ const FileContextMenu = ({
             className="h-4 w-4 text-red-500 group-hover:text-red-600 dark:text-red-400 dark:group-hover:text-red-300"
           >
             <path d="M3 6h18" />
-            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-.9-2-2V6" />
             <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
           </svg>
+
           <span>Delete</span>
         </button>
       </div>
