@@ -3,7 +3,7 @@ import { Link ,useNavigate} from "react-router-dom";
 import type{ NavigateFunction} from "react-router-dom";
 import { Eye, EyeClosed } from "lucide-react";
 import type { LoginUserRequest } from "@/interfaces";
-import { LoginUser, GetUserProfile } from "@/service/authService";
+import { LoginUser, GetUserProfile,LoginUserByGoogle } from "@/service/authService";
 import { validateLogin } from "@/service";
 import { useAuth } from "@/hooks";
 import { login } from "@/redux/authSlice";
@@ -44,7 +44,7 @@ const LoginPage = () => {
     } else if (response.success) {
       const userResponse = await GetUserProfile();
 
-      if (userResponse.success) {
+      if (userResponse.success && userResponse.data!=null) {
         dispatch(
           login({
             user: userResponse.data,
@@ -236,6 +236,7 @@ const LoginPage = () => {
               <button
                 type="button"
                 className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+                onClick={LoginUserByGoogle}
               >
                 <span className="font-bold">G</span>
                 Continue with Google

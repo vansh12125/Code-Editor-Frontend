@@ -16,6 +16,7 @@ export const SecuredNavbar = () => {
   const handleLogout = useLogout();
   const { user } = useAuth();
   const [selected, setSelected] = useState<"dashboard" | "projects">();
+  const [imageLoaded, setImageLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -37,7 +38,7 @@ export const SecuredNavbar = () => {
     <header className="fixed top-4 left-1/2 z-40 w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2">
       <nav className="flex h-14 items-center justify-between rounded-2xl border border-white/15 bg-black/40 px-4 backdrop-blur-xl">
         <Link
-          to="/"
+          to="/dashboard"
           className="text-base font-bold tracking-tight text-white transition hover:opacity-90"
         >
           CodeSpace
@@ -47,7 +48,9 @@ export const SecuredNavbar = () => {
           <Link
             to="/dashboard"
             className={`flex items-center gap-1.5 rounded-xl  px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/15 ${selected === "dashboard" ? "bg-white/10" : ""}`}
-             onClick={(e)=>{setSelected("dashboard")}}
+            onClick={() => {
+              setSelected("dashboard");
+            }}
           >
             <LayoutDashboard size={14} />
             Dashboard
@@ -56,7 +59,9 @@ export const SecuredNavbar = () => {
           <Link
             to="/projects"
             className={`flex items-center gap-1.5 rounded-xl  px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/15 ${selected === "projects" ? "bg-white/10" : ""}`}
-            onClick={(e)=>{setSelected("projects")}}
+            onClick={() => {
+              setSelected("projects");
+            }}
           >
             Projects
           </Link>
@@ -71,7 +76,22 @@ export const SecuredNavbar = () => {
             aria-haspopup="menu"
           >
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-xs font-bold text-neutral-950">
-              {user?.name.charAt(0).toUpperCase()}
+              <div>
+                {user?.avatarUrl && (
+                  <img
+                    src={user.avatarUrl}
+                    alt={user.name}
+                    draggable={false}
+                    onLoad={() => setImageLoaded(true)}
+                    onError={() => setImageLoaded(false)}
+                    className={`rounded-full object-cover overflow-hidden select-none pointer-events-none  ${
+                      imageLoaded ? "block" : "hidden"
+                    }`}
+                  />
+                )}
+
+                {!imageLoaded && user?.name?.charAt(0).toUpperCase()}
+              </div>
             </div>
 
             <div className="hidden text-left md:block">

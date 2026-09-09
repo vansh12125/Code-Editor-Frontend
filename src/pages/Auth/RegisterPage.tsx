@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeClosed } from "lucide-react";
 import { validateRegister } from "@/service/";
-import { RegisterUserByUsername } from "@/service/authService";
+import { RegisterUserByUsername,LoginUserByGoogle } from "@/service/authService";
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -386,6 +386,7 @@ const RegisterPage = () => {
               <button
                 type="button"
                 className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-xs font-medium text-white transition hover:bg-white/10"
+                onClick={LoginUserByGoogle}
               >
                 <span className="font-bold">G</span>
                 Sign up with Google

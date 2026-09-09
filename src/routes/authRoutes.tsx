@@ -1,5 +1,5 @@
 import type { RouteObject } from "react-router-dom";
-import { LoginPage, RegisterPage } from "@/pages/Auth";
+import { LoginPage, RegisterPage,OAuthSuccess } from "@/pages/Auth";
 import { MainLayout } from "@/components/layout";
 
 export const authRoutes: RouteObject[] = [
@@ -13,6 +13,10 @@ export const authRoutes: RouteObject[] = [
       {
         path: "/signup",
         element: <RegisterPage />,
+      },
+      {
+        path: "/oauth/success",
+        element: <OAuthSuccess />,
       },
     ],
   },

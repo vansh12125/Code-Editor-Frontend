@@ -1,5 +1,5 @@
 import axios from "axios";
-import { apiClient } from "@/config";
+import { apiClient,baseURL } from "@/config";
 import type {
   RegisterUserRequest,
   LoginUserRequest,
@@ -118,4 +118,8 @@ const LogoutUser = async (): Promise<Response<unknown, string | null>> => {
   }
 };
 
-export { RegisterUserByUsername, LoginUser, GetUserProfile, LogoutUser };
+const LoginUserByGoogle = async () => {
+  window.location.href = `${baseURL}/auth/signin/google`;
+};
+
+export { RegisterUserByUsername, LoginUser, GetUserProfile, LogoutUser,LoginUserByGoogle };

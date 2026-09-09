@@ -49,7 +49,7 @@ const Profile = () => {
   const [errors, setErrors] = useState<ProfileErrors>({});
   const [saved, setSaved] = useState(false);
   const [passwordChanged, setPasswordChanged] = useState(false);
-
+  const [imageLoaded, setImageLoaded] = useState<boolean>(false);
   const hasProfileChanges = name !== user?.name || username !== user?.username;
 
   const hasProfileErrors = Boolean(errors.name) || Boolean(errors.username);
@@ -190,8 +190,23 @@ const Profile = () => {
           <div className="border-b border-white/10 px-5 py-6 sm:px-7">
             <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
               <div className="relative">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white text-2xl font-bold text-neutral-950">
-                  {name.charAt(0).toUpperCase() || "A"}
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white text-2xl font-bold text-neutral-950 ">
+                  <div>
+                    {user?.avatarUrl && (
+                      <img
+                        src={user.avatarUrl}
+                        alt={user.name}
+                        draggable={false}
+                        onLoad={() => setImageLoaded(true)}
+                        onError={() => setImageLoaded(false)}
+                        className={`rounded-full object-cover overflow-hidden border select-none pointer-events-none ${
+                          imageLoaded ? "block" : "hidden"
+                        }`}
+                      />
+                    )}
+
+                    {!imageLoaded && user?.name?.charAt(0).toUpperCase()}
+                  </div>
                 </div>
 
                 <button

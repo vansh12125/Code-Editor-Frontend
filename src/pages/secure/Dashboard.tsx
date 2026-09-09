@@ -46,9 +46,9 @@ const Dashboard = () => {
   );
   const [projectNameError, setProjectNameError] = useState<string | null>(null);
 
-  const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isLangDropdownOpen, setIsLangDropdownOpen] = useState<boolean>(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(true);
 
   const langDropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
