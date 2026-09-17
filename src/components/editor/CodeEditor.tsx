@@ -18,13 +18,13 @@ const getLanguage = (language: string): string => {
       return "javascript";
 
     case ".jsx":
-      return "javascript";
+      return "javascriptreact";
 
     case ".ts":
       return "typescript";
 
     case ".tsx":
-      return "typescript";
+      return "typescriptreact";
 
     case ".css":
       return "css";
@@ -181,6 +181,40 @@ const CodeEditor = ({ content, language, onChange }: CodeEditorProps) => {
       options={{
         fontSize: 22,
         mouseWheelZoom: true,
+
+        autoClosingBrackets: "always",
+        autoClosingQuotes: "always",
+        autoClosingDelete: "always",
+        autoClosingOvertype: "always",
+
+        autoIndent: "full",
+        formatOnType: true,
+
+        quickSuggestions: true,
+        suggestOnTriggerCharacters: true,
+
+        suggest: {
+          preview: true,
+          previewMode: "subwordSmart",
+          showFiles: true,
+          showMethods: true,
+          showFunctions: true,
+          showConstructors: true,
+          showDeprecated: true,
+          showFields: true,
+          showVariables: true,
+          showClasses: true,
+          showStructs: true,
+          showInterfaces: true,
+          showModules: true,
+          showProperties: true,
+          showReferences: true,
+          showSnippets: true,
+          showWords: true,
+        },
+
+        cursorSmoothCaretAnimation: "on",
+        wordWrap: "on",
       }}
     />
   );
