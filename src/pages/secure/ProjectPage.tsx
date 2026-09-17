@@ -125,6 +125,7 @@ const ProjectPage = () => {
 
       dispatch(
         setProject({
+          language: response.data.language,
           projectId,
           projectName: response.data.name,
           projectTree: response.data,

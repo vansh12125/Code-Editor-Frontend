@@ -104,6 +104,57 @@ const FileContextMenu = ({
           </button>
         )}
 
+        {type === "directory" && (
+          <>
+            <button className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-xs font-medium transition-colors hover:bg-zinc-100 active:bg-zinc-200 dark:hover:bg-zinc-800 dark:active:bg-zinc-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-4 w-4 text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300"
+              >
+                <path d="M17 12V7L12.5 2.5H6.5A2.5 2.5 0 0 0 4 5v11a2.5 2.5 0 0 0 2.5 2.5H11.5" />
+
+                <path
+                  d="M12.5 2.5Q12.5 7 17 7L12.5 2.5Z"
+                  fill="currentColor"
+                  stroke="none"
+                />
+
+                <path
+                  fill="currentColor"
+                  fillRule="evenodd"
+                  stroke="none"
+                  d="M16 11a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-.8 4.2v-1.4a.8.8 0 0 1 1.6 0v1.4h1.4a.8.8 0 0 1 0 1.6h-1.4v1.4a.8.8 0 0 1-1.6 0v-1.4h-1.4a.8.8 0 0 1 0-1.6h1.4Z"
+                />
+              </svg>
+
+              <span>New File</span>
+            </button>
+            <button className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-xs font-medium transition-colors hover:bg-zinc-100 active:bg-zinc-200 dark:hover:bg-zinc-800 dark:active:bg-zinc-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-4 w-4 text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300"
+              >
+                <path d="M12 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v4" />
+
+                <path d="M18 14v6m-3-3h6" />
+              </svg>
+              <span>New Folder</span>
+            </button>
+          </>
+        )}
+
         <div className="my-1 h-px bg-zinc-200/80 dark:bg-zinc-800/80" />
 
         <button

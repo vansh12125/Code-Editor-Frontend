@@ -80,6 +80,16 @@ const getFileIcon = (extension?: string) => {
   }
 };
 
+const getParentPath = (path: string): string => {
+  const normalizedPath = path.replace(/[\\/]+$/, "");
+  const lastSeparator = Math.max(
+    normalizedPath.lastIndexOf("/"),
+    normalizedPath.lastIndexOf("\\"),
+  );
+
+  return lastSeparator === -1 ? "" : normalizedPath.slice(0, lastSeparator);
+};
+
 const FileTree = ({
   node,
   level = 0,
@@ -180,6 +190,7 @@ const FileTree = ({
             paddingLeft: `${level * 16 + 4}px`,
           }}
           onContextMenu={(e) => onContextMenu(e, node)}
+          title={getParentPath(node.path)}
         >
           <button
             type="button"
@@ -259,7 +270,12 @@ const FileTree = ({
   const isDirty = node.content !== savedContents[node.path];
 
   return (
-    <div onContextMenu={(e) => onContextMenu(e, node)} className="w-full">
+    <div
+      onContextMenu={(e) => onContextMenu(e, node)}
+      className="w-full"
+      onClick={() => console.log(getParentPath(node.path))}
+      title={getParentPath(node.path)}
+    >
       <button
         type="button"
         onClick={() => {

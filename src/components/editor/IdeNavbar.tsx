@@ -4,10 +4,27 @@ interface IdeNavbarProps {
   isDirty: boolean;
   onSave: () => void;
 }
+import { useProject } from "@/hooks";
 
 const IdeNavbar = ({ isDirty, onSave }: IdeNavbarProps) => {
-  
   const navigate = useNavigate();
+  const { language, projectId ,projectTree} = useProject();
+
+  const runProject = () => {
+    if (language !== "HTML" || !projectId || !projectTree) {
+      return;
+    }
+
+    sessionStorage.setItem(
+      `preview-project-${projectId}`,
+      JSON.stringify({
+        projectTree,
+        language,
+      }),
+    );
+
+    window.open(`${window.location.origin}/preview/${projectId}`, "_blank");
+  };
   return (
     <header
       className="flex h-12 items-center justify-between border-b border-white/10 bg-neutral-950 px-4 text-white select-none"
@@ -53,6 +70,7 @@ const IdeNavbar = ({ isDirty, onSave }: IdeNavbarProps) => {
         <button
           type="button"
           className="flex items-center gap-1.5 rounded-md bg-white px-3 py-1.5 text-xs font-medium text-black hover:bg-white/90"
+          onClick={runProject}
         >
           <Play size={14} />
           Run

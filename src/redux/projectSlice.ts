@@ -11,6 +11,7 @@ interface ProjectState {
   projectId: string | null;
   projectName: string;
   projectTree: ProjectTree | null;
+  language: string;
   selectedFile: SelectedFile | null;
   savedContents: Record<string, string>;
 }
@@ -21,6 +22,7 @@ const initialState: ProjectState = {
   projectTree: null,
   selectedFile: null,
   savedContents: {},
+  language: "",
 };
 
 const getSavedContents = (node: ProjectTree): Record<string, string> => {
@@ -50,11 +52,13 @@ const projectSlice = createSlice({
         projectId: string;
         projectName: string;
         projectTree: ProjectTree;
+        language: string;
       }>,
     ) => {
       state.projectId = action.payload.projectId;
       state.projectName = action.payload.projectName;
       state.projectTree = action.payload.projectTree;
+      state.language = action.payload.language;
       state.selectedFile = null;
       state.savedContents = getSavedContents(action.payload.projectTree);
     },
